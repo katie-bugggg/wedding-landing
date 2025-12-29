@@ -299,4 +299,91 @@ function initScrollAnimation() {
     document.querySelectorAll('section').forEach(section => {
         observer.observe(section);
     });
+    // ===== НАВИГАЦИЯ =====
+function initNavigation() {
+    const nav = document.getElementById('mainNav');
+    const navToggle = document.getElementById('navToggle');
+    const navMenu = document.getElementById('navMenu');
+    const navLinks = document.querySelectorAll('.nav-link');
+    
+    // Переключение мобильного меню
+    if (navToggle) {
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+            navToggle.classList.toggle('active');
+        });
+    }
+    
+    // Закрытие меню при клике на ссылку
+    navLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            navMenu.classList.remove('active');
+            navToggle.classList.remove('active');
+        });
+    });
+    
+    // Изменение активного пункта при скролле
+    function updateActiveNavLink() {
+        const scrollPos = window.scrollY + 100;
+        
+        navLinks.forEach(link => {
+            const section = document.querySelector(link.hash);
+            if (!section) return;
+            
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+            
+            if (scrollPos >= sectionTop && scrollPos <= sectionBottom) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    }
+    
+    // Плавный скролл для навигации
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            
+            if (targetId === '#') return;
+            
+            const targetSection = document.querySelector(targetId);
+            if (targetSection) {
+                window.scrollTo({
+                    top: targetSection.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Изменение стиля навигации при скролле
+    function updateNavStyle() {
+        if (window.scrollY > 100) {
+            nav.style.padding = '10px 0';
+            nav.style.boxShadow = '0 5px 20px rgba(92, 64, 51, 0.15)';
+        } else {
+            nav.style.padding = '15px 0';
+            nav.style.boxShadow = '0 2px 20px rgba(92, 64, 51, 0.1)';
+        }
+    }
+    
+    // Слушатели событий
+    window.addEventListener('scroll', () => {
+        updateActiveNavLink();
+        updateNavStyle();
+    });
+    
+    // Инициализация
+    updateNavStyle();
+    updateActiveNavLink();
+}
+
+// Добавьте вызов функции в DOMContentLoaded
+document.addEventListener('DOMContentLoaded', function() {
+    // ... существующий код ...
+    initNavigation(); // ← Добавьте эту строку
+});
 }
