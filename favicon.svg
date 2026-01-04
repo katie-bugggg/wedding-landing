@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <!-- Фоновый круг -->
+  <circle cx="32" cy="32" r="30" fill="#4a6c4a" />
+  <!-- Текст K&A -->
+  <text x="32" y="40" text-anchor="middle" fill="#c49a6c" font-family="Georgia, serif" font-size="24" font-weight="bold" dominant-baseline="middle">
+    K&amp;A
+  </text>
+</svg>
