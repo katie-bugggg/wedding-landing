@@ -251,6 +251,75 @@ function showFormMessage(message, type = 'info') {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🔥 DOM загружен, инициализируем...');
     
+    // === ГАМБУРГЕР МЕНЮ (ДОБАВЬТЕ ЭТОТ БЛОК В НАЧАЛЕ) ===
+    const hamburger = document.getElementById('hamburger');
+    const menuLinks = document.querySelector('.menu-links');
+    
+    if (hamburger && menuLinks) {
+        hamburger.addEventListener('click', function() {
+            menuLinks.classList.toggle('active');
+            hamburger.classList.toggle('active');
+        });
+        
+        // Закрытие меню при клике на ссылку
+        document.querySelectorAll('.menu-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                menuLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            });
+        });
+        
+        // Плавная прокрутка для меню
+        document.querySelectorAll('.fixed-menu a, .scroll-down, .logo, .btn[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href') && this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            });
+        });
+        
+        // Управление высотой меню при скролле
+        let lastScrollTop = 0;
+        const header = document.getElementById('header');
+        
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Если меню открыто, закрываем его при скролле
+            if (menuLinks.classList.contains('active')) {
+                menuLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+            
+            lastScrollTop = scrollTop;
+        });
+        
+        // Закрытие меню при клике вне его области
+        document.addEventListener('click', function(event) {
+            const isClickInsideMenu = menuLinks.contains(event.target) || hamburger.contains(event.target);
+            
+            if (!isClickInsideMenu && menuLinks.classList.contains('active')) {
+                menuLinks.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+        
+        console.log('✅ Гамбургер меню инициализировано');
+    } else {
+        console.log('⚠️ Элементы меню не найдены (возможно не на всех страницах)');
+    }
+    // === КОНЕЦ БЛОКА ГАМБУРГЕР МЕНЮ ===
+    
     // 1. Запускаем обратный отсчет сразу
     updateCountdown();
     countdownInterval = setInterval(updateCountdown, 1000);
