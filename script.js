@@ -19,6 +19,7 @@ let gameActive = false;
 const LEADERBOARD_KEY = 'wedding_memory_leaderboard';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0chT-BiTBb_cP11xqdc06e68mgtRg7gdyXKQsJ2f_n9TXlTPcL9NnSwJtGM2F_o7T/exec';
 
+
 // ========== ОБРАТНЫЙ ОТСЧЕТ ==========
 
 function updateCountdown() {
@@ -27,11 +28,33 @@ function updateCountdown() {
         const now = new Date();
         const diff = weddingDate - now;
         
-        const countdownEl = document.getElementById('countdown');
-        if (!countdownEl) return;
+        // Находим контейнеры с таймером
+        const daysEl = document.querySelector('.countdown-number.days .countdown-value');
+        const hoursEl = document.querySelector('.countdown-number.hours .countdown-value');
+        const minutesEl = document.querySelector('.countdown-number.minutes .countdown-value');
+        const secondsEl = document.querySelector('.countdown-number.seconds .countdown-value');
+        
+        if (!daysEl || !hoursEl || !minutesEl || !secondsEl) {
+            console.log('Элементы таймера не найдены, ищем по другому...');
+            // Попробуем найти по старым id
+            const daysAlt = document.getElementById('days');
+            const hoursAlt = document.getElementById('hours');
+            const minutesAlt = document.getElementById('minutes');
+            const secondsAlt = document.getElementById('seconds');
+            
+            if (daysAlt && hoursAlt && minutesAlt && secondsAlt) {
+                // Используем старые id
+                updateCountdownOld(daysAlt, hoursAlt, minutesAlt, secondsAlt, diff);
+                return;
+            }
+            return;
+        }
         
         if (diff <= 0) {
-            countdownEl.innerHTML = '<div class="countdown-over">Время отмечать! 🎉</div>';
+            const countdownEl = document.querySelector('.countdown');
+            if (countdownEl) {
+                countdownEl.innerHTML = '<div class="countdown-over">Время отмечать! 🎉</div>';
+            }
             if (countdownInterval) clearInterval(countdownInterval);
             return;
         }
@@ -41,18 +64,36 @@ function updateCountdown() {
         const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((diff % (1000 * 60)) / 1000);
         
-        const daysEl = document.getElementById('days');
-        const hoursEl = document.getElementById('hours');
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
+        daysEl.textContent = days.toString().padStart(2, '0');
+        hoursEl.textContent = hours.toString().padStart(2, '0');
+        minutesEl.textContent = minutes.toString().padStart(2, '0');
+        secondsEl.textContent = seconds.toString().padStart(2, '0');
         
-        if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
-        if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
-        if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
-        if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
     } catch (error) {
         console.error('Ошибка в updateCountdown:', error);
     }
+}
+
+// Старая версия для обратной совместимости
+function updateCountdownOld(daysEl, hoursEl, minutesEl, secondsEl, diff) {
+    if (diff <= 0) {
+        const countdownEl = document.getElementById('countdown');
+        if (countdownEl) {
+            countdownEl.innerHTML = '<div class="countdown-over">Время отмечать! 🎉</div>';
+        }
+        if (countdownInterval) clearInterval(countdownInterval);
+        return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    daysEl.textContent = days.toString().padStart(2, '0');
+    hoursEl.textContent = hours.toString().padStart(2, '0');
+    minutesEl.textContent = minutes.toString().padStart(2, '0');
+    secondsEl.textContent = seconds.toString().padStart(2, '0');
 }
 
 // ========== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ==========
