@@ -59,92 +59,191 @@ function updateCountdown() {
     }
 }
 
-// ========== ФОРМА ОТВЕТОВ (РАБОТАЕТ С ВАШЕЙ РАЗМЕТКОЙ) ==========
+// ========== ФОРМА ОТВЕТОВ (ИСПРАВЛЕННАЯ С ПРАВИЛЬНЫМИ СЕЛЕКТОРАМИ) ==========
 
 function initResponseForm() {
-    console.log('📝 Ищем форму на вашей странице...');
+    console.log('📝 Инициализация формы с правильными селекторами...');
     
-    // 1. Ищем элементы по их реальным селекторам из вашего HTML
-    // Селект для количества гостей находится по name="guests-count"
-    const guestsCountSelect = document.querySelector('select[name="guests-count"]');
+    // 1. Находим элементы по их реальным ID из вашего HTML
+    const guestsCountSelect = document.getElementById('guests-count');
+    const additionalGuestsContainer = document.getElementById('additional-guests');
+    const guestForm = document.getElementById('guest-form');
     
-    // Контейнер для дополнительных полей создадим сами
-    let additionalGuestsContainer = document.getElementById('additional-guests-container');
-    
-    // Если контейнера нет - создадим его после селекта
-    if (!additionalGuestsContainer && guestsCountSelect) {
-        additionalGuestsContainer = document.createElement('div');
-        additionalGuestsContainer.id = 'additional-guests-container';
-        additionalGuestsContainer.className = 'additional-guests-container';
-        
-        // Вставляем контейнер после селекта (в том же form-group)
-        guestsCountSelect.closest('.form-group').appendChild(additionalGuestsContainer);
-    }
+    console.log('Найдены элементы:', {
+        guestsCountSelect: !!guestsCountSelect,
+        additionalGuestsContainer: !!additionalGuestsContainer,
+        guestForm: !!guestForm
+    });
     
     if (!guestsCountSelect) {
-        console.error('❌ Селект выбора гостей не найден! Ищем по name="guests-count"');
+        console.error('❌ Элемент #guests-count не найден!');
         return;
     }
     
-    console.log('✅ Нашли элементы формы:', {
-        select: guestsCountSelect,
-        container: additionalGuestsContainer
-    });
-    
-    // 2. Функция для создания поля гостя
-    function createGuestField(guestNumber) {
-        const guestField = document.createElement('div');
-        guestField.className = 'form-group';
-        guestField.innerHTML = `
-            <label for="guest_${guestNumber}">Имя гостя ${guestNumber}:</label>
-            <input type="text" 
-                   id="guest_${guestNumber}" 
-                   name="guest_${guestNumber}" 
-                   class="form-control"
-                   placeholder="Введите имя гостя"
-                   required>
-        `;
-        return guestField;
+    if (!additionalGuestsContainer) {
+        console.error('❌ Элемент #additional-guests не найден!');
+        return;
     }
     
-    // 3. Функция для обновления полей гостей
+    if (!guestForm) {
+        console.error('❌ Элемент #guest-form не найден!');
+        return;
+    }
+    
+    console.log('✅ Все элементы формы найдены!');
+    
+    // 2. Функция для добавления полей дополнительных гостей (как в вашем работающем коде)
     function updateGuestFields() {
-        const selectedValue = parseInt(guestsCountSelect.value);
-        console.log('Выбрано гостей:', selectedValue);
+        const guestsCount = parseInt(guestsCountSelect.value);
+        console.log('Количество гостей изменено на:', guestsCount);
         
-        // Очищаем предыдущие поля
-        if (additionalGuestsContainer) {
-            additionalGuestsContainer.innerHTML = '';
+        additionalGuestsContainer.innerHTML = '';
+        
+        if (guestsCount > 1) {
+            additionalGuestsContainer.style.display = 'block';
             
-            // Если выбрано больше 1 гостя, показываем поля для имен
-            if (selectedValue > 1) {
-                console.log('Создаем поля для', selectedValue - 1, 'дополнительных гостей');
-                
-                // Создаем поля для гостей со 2-го по выбранное число
-                for (let i = 2; i <= selectedValue; i++) {
-                    additionalGuestsContainer.appendChild(createGuestField(i));
-                }
-                additionalGuestsContainer.style.display = 'block';
-            } else {
-                console.log('Скрываем дополнительные поля');
-                additionalGuestsContainer.style.display = 'none';
+            for (let i = 2; i <= guestsCount; i++) {
+                const div = document.createElement('div');
+                div.className = 'form-group';
+                div.innerHTML = `
+                    <label for="guest${i}">Имя гостя ${i}:</label>
+                    <input type="text" id="guest${i}" name="guest${i}" 
+                           class="form-control" placeholder="Введите имя гостя">
+                `;
+                additionalGuestsContainer.appendChild(div);
             }
+        } else {
+            additionalGuestsContainer.style.display = 'none';
         }
     }
     
-    // 4. Вешаем обработчик изменения количества гостей
+    // 3. Вешаем обработчик изменения количества гостей
     guestsCountSelect.addEventListener('change', updateGuestFields);
     
-    // 5. Инициализируем поля при загрузке (если уже выбрано значение в URL)
-    // В вашем URL уже есть guests-count=3, поэтому поля должны появиться сразу
-    setTimeout(() => {
-        if (guestsCountSelect.value && parseInt(guestsCountSelect.value) > 1) {
-            console.log('Инициализируем с выбранным в URL значением:', guestsCountSelect.value);
-            updateGuestFields();
-        }
-    }, 100);
+    // 4. Инициализируем поля если в URL уже есть значение (guests-count=3)
+    if (guestsCountSelect.value && parseInt(guestsCountSelect.value) > 1) {
+        console.log('Инициализируем поля с выбранным значением:', guestsCountSelect.value);
+        updateGuestFields();
+    }
     
-    console.log('✅ Форма ответов инициализирована для вашей разметки!');
+    // 5. Обработчик отправки формы (упрощенный)
+    guestForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = 'Отправка...';
+        submitBtn.disabled = true;
+        
+        try {
+            // Собираем данные формы (как в вашем работающем коде)
+            const formData = {
+                name: document.getElementById('name').value,
+                guests_count: guestsCountSelect.value,
+                drinks: getSelectedOptions('drinks'),
+                stay: document.getElementById('stay').value,
+                car: document.getElementById('car').value,
+                track: document.getElementById('track').value,
+                phone: document.getElementById('phone').value
+            };
+            
+            // Собираем дополнительные имена гостей
+            const additionalGuests = [];
+            const guestInputs = document.querySelectorAll('#additional-guests input');
+            guestInputs.forEach(input => {
+                if (input.value.trim()) {
+                    additionalGuests.push(input.value.trim());
+                }
+            });
+            
+            if (additionalGuests.length > 0) {
+                formData.additional_guests = additionalGuests;
+            }
+            
+            // Отправляем данные на Google Apps Script
+            const response = await fetch('https://script.google.com/macros/s/AKfycbxQDR4UsaEklGfo0aUFbGaHFzmqTl5RKjJxJ3Ipd4e__lipkxCoH4Y7tAVu5zTCgmoO/exec', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showFormMessage('✅ Спасибо за подтверждение! Мы добавили вас в список гостей.', 'success');
+                guestForm.reset();
+                additionalGuestsContainer.style.display = 'none';
+                additionalGuestsContainer.innerHTML = '';
+            } else {
+                showFormMessage('❌ Ошибка при отправке. Пожалуйста, попробуйте еще раз.', 'error');
+                console.error('Ошибка сервера:', result.message);
+            }
+            
+        } catch (error) {
+            showFormMessage('❌ Ошибка соединения. Проверьте интернет и попробуйте еще раз.', 'error');
+            console.error('Ошибка сети:', error);
+        } finally {
+            submitBtn.textContent = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+    
+    console.log('✅ Форма ответов полностью инициализирована!');
+}
+
+// Функция для получения выбранных опций в мультиселекте
+function getSelectedOptions(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return [];
+    
+    const selected = [];
+    for (let i = 0; i < select.options.length; i++) {
+        if (select.options[i].selected) {
+            selected.push(select.options[i].value);
+        }
+    }
+    return selected;
+}
+
+// Функция для показа сообщений формы
+function showFormMessage(message, type = 'info') {
+    const existingMessage = document.querySelector('.form-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `form-message ${type}`;
+    messageDiv.textContent = message;
+    messageDiv.style.cssText = `
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+        background-color: ${type === 'success' ? 'rgba(74, 108, 74, 0.1)' : 'rgba(255, 0, 0, 0.1)'};
+        color: ${type === 'success' ? '#4a6c4a' : '#d32f2f'};
+        border: 1px solid ${type === 'success' ? '#4a6c4a' : '#d32f2f'};
+    `;
+    
+    const submitBtn = document.querySelector('#guest-form button[type="submit"]');
+    if (submitBtn && submitBtn.parentNode) {
+        submitBtn.parentNode.insertBefore(messageDiv, submitBtn);
+    }
+    
+    if (type === 'success') {
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transition = 'opacity 0.5s';
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 500);
+            }
+        }, 5000);
+    }
 }
 
 // ========== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ (ИСПРАВЛЕННАЯ) ==========
