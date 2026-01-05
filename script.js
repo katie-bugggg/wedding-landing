@@ -17,7 +17,7 @@ let gameActive = false;
 
 // Ключ для localStorage
 const LEADERBOARD_KEY = 'wedding_memory_leaderboard';
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0chT-BiTBb_cP11xqdc06e68mgtRg7gdyXKQsJ2f_n9TXlTPcL9NnSwJtGM2F_o7T/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyBO-j0m78Q9Yve96-8IPBfLTBuHLw-mA3W47XZijRcVJ2s6QcOckjMeweWw7ak7aen/exec';
 
 // ========== ОБРАТНЫЙ ОТСЧЕТ (ИСПРАВЛЕННЫЙ) ==========
 
@@ -161,7 +161,7 @@ function initResponseForm() {
             }
             
             // Отправляем данные на Google Apps Script
-            const response = await fetch('https://script.google.com/macros/s/AKfycbxQDR4UsaEklGfo0aUFbGaHFzmqTl5RKjJxJ3Ipd4e__lipkxCoH4Y7tAVu5zTCgmoO/exec', {
+            const response = await fetch('https://script.google.com/macros/s/AKfycbyBO-j0m78Q9Yve96-8IPBfLTBuHLw-mA3W47XZijRcVJ2s6QcOckjMeweWw7ak7aen/exec', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData)
