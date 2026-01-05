@@ -1,8 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
-  <!-- Фоновый круг -->
-  <circle cx="32" cy="32" r="30" fill="#4a6c4a" />
-  <!-- Текст K&A -->
-  <text x="32" y="40" text-anchor="middle" fill="#c49a6c" font-family="Georgia, serif" font-size="24" font-weight="bold" dominant-baseline="middle">
-    K&amp;A
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+  <path d="M16 27.5
+           C11 23.5 8 20 8 16
+           C8 13 10.5 11 13.5 11
+           C15 11 16.5 12 17 13
+           C17.5 12 19 11 20.5 11
+           C23.5 11 26 13 26 16
+           C26 20 23 23.5 18 27.5Z" 
+        fill="#4a6c4a"/>
 </svg>
