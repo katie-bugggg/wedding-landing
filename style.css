@@ -1972,6 +1972,8 @@ footer .fas.fa-heart {
 }
 
 /* Адаптивность Pinterest-галереи */
+
+/* Большие экраны и ноутбуки */
 @media (max-width: 1200px) {
     .pinterest-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -1984,6 +1986,7 @@ footer .fas.fa-heart {
     }
 }
 
+/* Планшеты и маленькие ноутбуки */
 @media (max-width: 992px) {
     .pinterest-grid {
         grid-template-columns: repeat(4, 1fr);
@@ -1996,11 +1999,12 @@ footer .fas.fa-heart {
     }
 }
 
+/* Планшеты (горизонтальные и вертикальные) */
 @media (max-width: 768px) {
     .pinterest-grid {
-        grid-template-columns: repeat(3, 1fr);
-        gap: 4px;
-        row-gap: 20px;
+        grid-template-columns: repeat(3, 1fr); /* 3 в ряд для планшетов */
+        gap: 8px; /* Увеличили отступы для 3 в ряд */
+        row-gap: 25px;
     }
     
     .pinterest-item {
@@ -2008,25 +2012,70 @@ footer .fas.fa-heart {
     }
 }
 
-@media (max-width: 576px) {
+/* Большие телефоны и iPhone 16 Pro (393px и выше) */
+@media (max-width: 576px) and (min-width: 393px) {
     .pinterest-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 4px;
+        grid-template-columns: repeat(3, 1fr); /* 3 в ряд для iPhone 16 Pro */
+        gap: 6px;
         row-gap: 20px;
+        padding: 0 5px; /* Уменьшаем отступы по бокам */
     }
     
     .pinterest-item {
-        height: 150px;
+        height: 140px; /* Немного уменьшаем для 3 в ряд */
     }
 }
 
-@media (max-width: 400px) {
+/* iPhone 14/15 Pro и подобные (390-393px) */
+@media (max-width: 392px) and (min-width: 376px) {
+    .pinterest-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 в ряд */
+        gap: 5px;
+        row-gap: 20px;
+        padding: 0 5px;
+    }
+    
+    .pinterest-item {
+        height: 135px;
+    }
+}
+
+/* Стандартные телефоны (375px - типичный iPhone) */
+@media (max-width: 375px) and (min-width: 361px) {
+    .pinterest-grid {
+        grid-template-columns: repeat(3, 1fr); /* 3 в ряд */
+        gap: 4px;
+        row-gap: 18px;
+        padding: 0 4px;
+    }
+    
+    .pinterest-item {
+        height: 130px;
+    }
+}
+
+/* Маленькие телефоны (до 360px) - здесь оставляем 2 в ряд */
+@media (max-width: 360px) {
+    .pinterest-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 в ряд для очень маленьких */
+        gap: 5px;
+        row-gap: 15px;
+    }
+    
     .pinterest-item {
         height: 140px;
     }
-    
+}
+
+/* Очень маленькие телефоны (менее 320px) */
+@media (max-width: 320px) {
     .pinterest-grid {
-        row-gap: 15px;
+        gap: 4px;
+        row-gap: 12px;
+    }
+    
+    .pinterest-item {
+        height: 120px;
     }
 }
 
