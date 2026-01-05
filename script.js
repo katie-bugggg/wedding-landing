@@ -59,37 +59,39 @@ function updateCountdown() {
     }
 }
 
-// ========== ФОРМА ОТВЕТОВ (ИСПРАВЛЕННАЯ ВЕРСИЯ) ==========
+// ========== ФОРМА ОТВЕТОВ (РАБОТАЕТ С ВАШЕЙ РАЗМЕТКОЙ) ==========
 
 function initResponseForm() {
-    console.log('📝 Инициализация формы ответов...');
+    console.log('📝 Ищем форму на вашей странице...');
     
-    // Проверяем, есть ли форма на странице
-    const responseForm = document.getElementById('response-form');
-    if (!responseForm) {
-        console.log('Форма response-form не найдена на этой странице');
-        return;
+    // 1. Ищем элементы по их реальным селекторам из вашего HTML
+    // Селект для количества гостей находится по name="guests-count"
+    const guestsCountSelect = document.querySelector('select[name="guests-count"]');
+    
+    // Контейнер для дополнительных полей создадим сами
+    let additionalGuestsContainer = document.getElementById('additional-guests-container');
+    
+    // Если контейнера нет - создадим его после селекта
+    if (!additionalGuestsContainer && guestsCountSelect) {
+        additionalGuestsContainer = document.createElement('div');
+        additionalGuestsContainer.id = 'additional-guests-container';
+        additionalGuestsContainer.className = 'additional-guests-container';
+        
+        // Вставляем контейнер после селекта (в том же form-group)
+        guestsCountSelect.closest('.form-group').appendChild(additionalGuestsContainer);
     }
-    
-    const guestsCountSelect = document.getElementById('guests_count');
-    const additionalGuestsContainer = document.getElementById('additional-guests-container');
     
     if (!guestsCountSelect) {
-        console.error('❌ Элемент guests_count не найден!');
+        console.error('❌ Селект выбора гостей не найден! Ищем по name="guests-count"');
         return;
     }
     
-    if (!additionalGuestsContainer) {
-        console.error('❌ Элемент additional-guests-container не найден!');
-        return;
-    }
-    
-    console.log('✅ Элементы формы найдены:', {
-        guestsCountSelect: !!guestsCountSelect,
-        additionalGuestsContainer: !!additionalGuestsContainer
+    console.log('✅ Нашли элементы формы:', {
+        select: guestsCountSelect,
+        container: additionalGuestsContainer
     });
     
-    // Функция для создания поля гостя
+    // 2. Функция для создания поля гостя
     function createGuestField(guestNumber) {
         const guestField = document.createElement('div');
         guestField.className = 'form-group';
@@ -98,92 +100,51 @@ function initResponseForm() {
             <input type="text" 
                    id="guest_${guestNumber}" 
                    name="guest_${guestNumber}" 
-                   class="guest-name-input"
+                   class="form-control"
                    placeholder="Введите имя гостя"
                    required>
         `;
         return guestField;
     }
     
-    // Функция для обновления полей гостей
+    // 3. Функция для обновления полей гостей
     function updateGuestFields() {
         const selectedValue = parseInt(guestsCountSelect.value);
-        console.log('Количество гостей выбрано:', selectedValue);
+        console.log('Выбрано гостей:', selectedValue);
         
         // Очищаем предыдущие поля
-        additionalGuestsContainer.innerHTML = '';
-        
-        // Если выбрано больше 1 гостя, показываем поля для имен
-        if (selectedValue > 1 && selectedValue <= 10) { // Ограничим максимум 10 гостями
-            console.log('Создаем поля для', selectedValue - 1, 'дополнительных гостей');
+        if (additionalGuestsContainer) {
+            additionalGuestsContainer.innerHTML = '';
             
-            for (let i = 2; i <= selectedValue; i++) {
-                const guestField = createGuestField(i);
-                additionalGuestsContainer.appendChild(guestField);
+            // Если выбрано больше 1 гостя, показываем поля для имен
+            if (selectedValue > 1) {
+                console.log('Создаем поля для', selectedValue - 1, 'дополнительных гостей');
+                
+                // Создаем поля для гостей со 2-го по выбранное число
+                for (let i = 2; i <= selectedValue; i++) {
+                    additionalGuestsContainer.appendChild(createGuestField(i));
+                }
+                additionalGuestsContainer.style.display = 'block';
+            } else {
+                console.log('Скрываем дополнительные поля');
+                additionalGuestsContainer.style.display = 'none';
             }
-            additionalGuestsContainer.style.display = 'block';
-            
-            // Плавное появление
-            setTimeout(() => {
-                additionalGuestsContainer.style.opacity = '1';
-                additionalGuestsContainer.style.transform = 'translateY(0)';
-            }, 10);
-        } else {
-            console.log('Скрываем дополнительные поля');
-            additionalGuestsContainer.style.display = 'none';
-            additionalGuestsContainer.style.opacity = '0';
-            additionalGuestsContainer.style.transform = 'translateY(-10px)';
         }
     }
     
-    // Добавляем обработчик изменения количества гостей
+    // 4. Вешаем обработчик изменения количества гостей
     guestsCountSelect.addEventListener('change', updateGuestFields);
     
-    // Инициализируем поля при загрузке (если уже выбрано значение)
-    if (guestsCountSelect.value && guestsCountSelect.value !== '1') {
-        console.log('Инициализируем поля с выбранным значением:', guestsCountSelect.value);
-        setTimeout(updateGuestFields, 100); // Небольшая задержка для гарантии
-    }
+    // 5. Инициализируем поля при загрузке (если уже выбрано значение в URL)
+    // В вашем URL уже есть guests-count=3, поэтому поля должны появиться сразу
+    setTimeout(() => {
+        if (guestsCountSelect.value && parseInt(guestsCountSelect.value) > 1) {
+            console.log('Инициализируем с выбранным в URL значением:', guestsCountSelect.value);
+            updateGuestFields();
+        }
+    }, 100);
     
-    // Добавляем стили для плавной анимации
-    if (!document.querySelector('#guest-fields-styles')) {
-        const style = document.createElement('style');
-        style.id = 'guest-fields-styles';
-        style.textContent = `
-            #additional-guests-container {
-                transition: all 0.3s ease;
-                opacity: 0;
-                transform: translateY(-10px);
-                margin-top: 15px;
-                padding-top: 15px;
-                border-top: 1px dashed #e0d6c9;
-            }
-            #additional-guests-container .form-group {
-                margin-bottom: 15px;
-                animation: fadeIn 0.3s ease;
-            }
-            @keyframes fadeIn {
-                from { opacity: 0; transform: translateY(-5px); }
-                to { opacity: 1; transform: translateY(0); }
-            }
-            .guest-name-input {
-                width: 100%;
-                padding: 10px 15px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
-                font-size: 16px;
-                transition: border-color 0.3s;
-            }
-            .guest-name-input:focus {
-                border-color: #8B7355;
-                outline: none;
-                box-shadow: 0 0 0 2px rgba(139, 115, 85, 0.1);
-            }
-        `;
-        document.head.appendChild(style);
-    }
-    
-    console.log('✅ Форма ответов инициализирована!');
+    console.log('✅ Форма ответов инициализирована для вашей разметки!');
 }
 
 // ========== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ (ИСПРАВЛЕННАЯ) ==========
