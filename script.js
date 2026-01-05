@@ -22,48 +22,53 @@ const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0chT-BiTBb_cP11xqd
 // ========== ОБРАТНЫЙ ОТСЧЕТ ==========
 
 function updateCountdown() {
-    const weddingDate = new Date('2025-06-13T16:00:00');
-    const now = new Date();
-    const diff = weddingDate - now;
-    
-    if (diff <= 0) {
-        document.getElementById('countdown').innerHTML = '<div class="countdown-over">Время отмечать! 🎉</div>';
-        if (countdownInterval) clearInterval(countdownInterval);
-        return;
+    try {
+        const weddingDate = new Date('2025-06-13T16:00:00');
+        const now = new Date();
+        const diff = weddingDate - now;
+        
+        const countdownEl = document.getElementById('countdown');
+        if (!countdownEl) return;
+        
+        if (diff <= 0) {
+            countdownEl.innerHTML = '<div class="countdown-over">Время отмечать! 🎉</div>';
+            if (countdownInterval) clearInterval(countdownInterval);
+            return;
+        }
+        
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        
+        const daysEl = document.getElementById('days');
+        const hoursEl = document.getElementById('hours');
+        const minutesEl = document.getElementById('minutes');
+        const secondsEl = document.getElementById('seconds');
+        
+        if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
+        if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+        if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+        if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+    } catch (error) {
+        console.error('Ошибка в updateCountdown:', error);
     }
-    
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-    
-    const daysEl = document.getElementById('days');
-    const hoursEl = document.getElementById('hours');
-    const minutesEl = document.getElementById('minutes');
-    const secondsEl = document.getElementById('seconds');
-    
-    if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
-    if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
-    if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
-    if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
 }
 
 // ========== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ==========
 
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
+    console.log('🔥 DOM загружен, инициализируем...');
     
     // 1. Запускаем обратный отсчет
     updateCountdown();
     countdownInterval = setInterval(updateCountdown, 1000);
     
     // 2. Инициализируем игру Memory
-    initMemoryGame();
+    setTimeout(initMemoryGame, 100);
     
     // 3. Загружаем таблицу лидеров
-    setTimeout(() => {
-        loadLeaderboard();
-    }, 500);
+    setTimeout(loadLeaderboard, 500);
     
     // 4. Добавляем обработчик ресайза
     window.addEventListener('resize', adjustGameForMobile);
@@ -72,77 +77,86 @@ document.addEventListener('DOMContentLoaded', function() {
 // ========== ИНИЦИАЛИЗАЦИЯ ИГРЫ MEMORY ==========
 
 function initMemoryGame() {
-    console.log('Initializing memory game...');
+    console.log('🎮 Инициализация игры Memory...');
     
     const toggleGameBtn = document.getElementById('toggle-game-btn');
-    const restartGameBtn = document.getElementById('restart-game');
-    const saveResultBtn = document.getElementById('save-result-btn');
-    const playerNameInput = document.getElementById('player-name');
     
     if (!toggleGameBtn) {
-        console.error('toggleGameBtn not found');
+        console.error('❌ Кнопка "toggle-game-btn" не найдена!');
+        // Попробуем еще раз через секунду
+        setTimeout(initMemoryGame, 1000);
         return;
     }
     
-    console.log('Game elements found');
+    console.log('✅ Кнопка найдена, добавляем обработчик...');
     
     // Обработчик кнопки "Сыграть в Memory"
     toggleGameBtn.addEventListener('click', function() {
-        console.log('Toggle button clicked');
+        console.log('🎯 Кнопка нажата!');
         const gameContainer = document.getElementById('game-container');
-        const isHidden = !gameContainer || gameContainer.style.display === 'none' || gameContainer.style.display === '';
+        
+        if (!gameContainer) {
+            console.error('❌ game-container не найден');
+            return;
+        }
+        
+        const isHidden = gameContainer.style.display === 'none' || gameContainer.style.display === '';
         
         if (isHidden) {
             // Показываем игру
-            if (gameContainer) {
-                gameContainer.style.display = 'block';
-                gameStarted = true;
-                
-                // Инициализируем игру если нужно
-                const grid = document.getElementById('memory-grid');
-                if (grid && grid.children.length === 0) {
-                    initGame();
-                } else {
-                    adjustGameForMobile();
-                }
-                
-                // Меняем текст кнопки
-                toggleGameBtn.textContent = 'Скрыть игру';
-                
-                // Прокрутка
-                setTimeout(() => {
-                    if (gameContainer) gameContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+            gameContainer.style.display = 'block';
+            gameStarted = true;
+            
+            // Инициализируем игру если нужно
+            const grid = document.getElementById('memory-grid');
+            if (grid && grid.children.length === 0) {
+                initGame();
+            } else {
+                adjustGameForMobile();
             }
+            
+            // Загружаем турнирную таблицу
+            loadLeaderboard();
+            
+            // Меняем текст кнопки
+            toggleGameBtn.textContent = 'Скрыть игру';
+            
+            // Прокрутка
+            setTimeout(() => {
+                gameContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
         } else {
             // Скрываем игру
-            if (gameContainer) {
-                gameContainer.style.display = 'none';
-                gameStarted = false;
-                
-                if (timerRunning) {
-                    clearInterval(gameInterval);
-                    timerRunning = false;
-                }
-                
-                gameActive = false;
-                toggleGameBtn.textContent = 'Сыграть в Memory';
+            gameContainer.style.display = 'none';
+            gameStarted = false;
+            
+            if (timerRunning) {
+                clearInterval(gameInterval);
+                timerRunning = false;
             }
+            
+            gameActive = false;
+            toggleGameBtn.textContent = 'Сыграть в Memory';
         }
     });
     
     // Кнопка "Начать заново"
+    const restartGameBtn = document.getElementById('restart-game');
     if (restartGameBtn) {
         restartGameBtn.addEventListener('click', function() {
             resetGameState();
             initGame();
             const saveResultForm = document.getElementById('save-result-form');
             if (saveResultForm) saveResultForm.style.display = 'none';
+            const playerNameInput = document.getElementById('player-name');
             if (playerNameInput) playerNameInput.value = '';
         });
     }
     
     // Кнопка сохранения результата
+    const saveResultBtn = document.getElementById('save-result-btn');
+    const playerNameInput = document.getElementById('player-name');
+    
     if (saveResultBtn && playerNameInput) {
         saveResultBtn.addEventListener('click', function() {
             const playerName = playerNameInput.value.trim();
@@ -163,13 +177,15 @@ function initMemoryGame() {
             if (saveResultForm) saveResultForm.style.display = 'none';
         });
     }
+    
+    console.log('✅ Игра Memory инициализирована!');
 }
 
 // ========== ФУНКЦИИ ИГРЫ MEMORY ==========
 
 // Функция инициализации игры
 function initGame() {
-    console.log('Initializing game grid...');
+    console.log('🃏 Инициализация игрового поля...');
     const grid = document.getElementById('memory-grid');
     if (!grid) return;
     
@@ -195,7 +211,7 @@ function initGame() {
 
 // Функция сброса состояния игры
 function resetGameState() {
-    console.log('Resetting game state...');
+    console.log('🔄 Сброс состояния игры...');
     if (timerRunning) {
         clearInterval(gameInterval);
         timerRunning = false;
@@ -221,7 +237,7 @@ function resetGameState() {
 // Запуск таймера
 function startTimer() {
     if (!timerRunning) {
-        console.log('Starting timer...');
+        console.log('⏱️ Запуск таймера...');
         gameTimer = 0;
         timerRunning = true;
         gameInterval = setInterval(() => {
@@ -239,7 +255,7 @@ function flipCard() {
     if (this.classList.contains('matched')) return;
     
     if (!gameActive) {
-        console.log('First move, starting game...');
+        console.log('🎮 Первый ход, начинаем игру...');
         gameActive = true;
         startTimer();
     }
@@ -271,7 +287,7 @@ function checkForMatch() {
         if (pairsEl) pairsEl.textContent = pairsFound;
         
         if (pairsFound === 15) {
-            console.log('Game completed!');
+            console.log('🏆 Игра завершена!');
             if (timerRunning) {
                 clearInterval(gameInterval);
                 timerRunning = false;
@@ -317,7 +333,7 @@ function resetBoard() {
 
 // Показать модальное окно с результатами
 function showResultModal() {
-    console.log('Showing result modal');
+    console.log('🏅 Показ модального окна с результатами...');
     const modal = document.createElement('div');
     modal.className = 'result-modal';
     modal.style.display = 'flex';
@@ -371,7 +387,7 @@ function showResultModal() {
 
 // Сохранение результата
 async function saveResult(name, moves, time) {
-    console.log('Saving result:', name, moves, time);
+    console.log('💾 Сохранение результата:', name, moves, time);
     try {
         const saveResultBtn = document.getElementById('save-result-btn');
         if (saveResultBtn) {
@@ -390,7 +406,7 @@ async function saveResult(name, moves, time) {
         });
         
         const result = await response.json();
-        console.log('Server response:', result);
+        console.log('📨 Ответ сервера:', result);
         
         if (result.success) {
             // Сохраняем также локально
@@ -409,7 +425,7 @@ async function saveResult(name, moves, time) {
         }
         
     } catch (error) {
-        console.error('Ошибка сохранения:', error);
+        console.error('❌ Ошибка сохранения:', error);
         saveToLocalStorage(name, moves, time);
         loadLeaderboard();
         showNotification('⚠️ Результат сохранен локально (ошибка сети)');
@@ -478,11 +494,11 @@ function showNotification(message) {
 async function loadLeaderboard() {
     const leaderboardElement = document.getElementById('leaderboard');
     if (!leaderboardElement) {
-        console.log('leaderboard element not found');
+        console.log('📊 Элемент leaderboard не найден');
         return;
     }
     
-    console.log('Loading leaderboard...');
+    console.log('📥 Загрузка таблицы лидеров...');
     leaderboardElement.innerHTML = `
         <div class="loading">
             <div class="spinner"></div>
@@ -493,7 +509,7 @@ async function loadLeaderboard() {
     try {
         const response = await fetch(`${SCRIPT_URL}?action=getTopScores`);
         const cloudLeaderboard = await response.json();
-        console.log('Cloud leaderboard:', cloudLeaderboard);
+        console.log('☁️ Облачная таблица:', cloudLeaderboard);
         
         if (cloudLeaderboard && cloudLeaderboard.length > 0) {
             displayLeaderboard(cloudLeaderboard, 'cloud');
@@ -507,7 +523,7 @@ async function loadLeaderboard() {
         }
         
     } catch (error) {
-        console.error('Ошибка загрузки из облака:', error);
+        console.error('❌ Ошибка загрузки из облака:', error);
         const localLeaderboard = getLeaderboard();
         if (localLeaderboard.length > 0) {
             displayLeaderboard(localLeaderboard, 'local');
@@ -605,7 +621,7 @@ function getLeaderboard() {
         const stored = localStorage.getItem(LEADERBOARD_KEY);
         return stored ? JSON.parse(stored) : [];
     } catch (e) {
-        console.error('Ошибка загрузки турнирной таблицы:', e);
+        console.error('❌ Ошибка загрузки турнирной таблицы:', e);
         return [];
     }
 }
@@ -689,3 +705,15 @@ if (!document.querySelector('#game-animations')) {
     `;
     document.head.appendChild(style);
 }
+
+// Тестовая функция для проверки в консоли
+window.testElements = function() {
+    console.log('🔍 Проверка элементов:');
+    console.log('toggle-game-btn:', document.getElementById('toggle-game-btn'));
+    console.log('game-container:', document.getElementById('game-container'));
+    console.log('countdown:', document.getElementById('countdown'));
+    console.log('days:', document.getElementById('days'));
+    console.log('hours:', document.getElementById('hours'));
+    console.log('minutes:', document.getElementById('minutes'));
+    console.log('seconds:', document.getElementById('seconds'));
+};
