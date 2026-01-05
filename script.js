@@ -628,7 +628,7 @@ function displayLeaderboard(leaderboard, isCloud) {
     tableHTML += `
         <div class="leaderboard-footer">
             <button id="refresh-leaderboard" class="refresh-btn">
-                🔄 Обновить таблицу
+                Обновить таблицу
             </button>
         </div>
     `;
