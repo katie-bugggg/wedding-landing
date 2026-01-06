@@ -1,5 +1,10 @@
 // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
 
+// Форма
+let guestForm = null;
+let guestsCountSelect = null;
+let additionalGuestsContainer = null;
+
 // Таймер обратного отсчета
 let countdownInterval = null;
 
@@ -64,10 +69,10 @@ function updateCountdown() {
 function initResponseForm() {
     console.log('📝 Инициализация формы с правильными селекторами...');
     
-    // 1. Находим элементы по их реальным ID из вашего HTML
-    const guestsCountSelect = document.getElementById('guests-count');
-    const additionalGuestsContainer = document.getElementById('additional-guests');
-    const guestForm = document.getElementById('guest-form');
+    // 1. Находим элементы по их ID из HTML
+    guestsCountSelect = document.getElementById('guests-count');
+    additionalGuestsContainer = document.getElementById('additional-guests');
+    guestForm = document.getElementById('guest-form');
     
     console.log('Найдены элементы:', {
         guestsCountSelect: !!guestsCountSelect,
@@ -92,7 +97,7 @@ function initResponseForm() {
     
     console.log('✅ Все элементы формы найдены!');
     
-    // 2. Функция для добавления полей дополнительных гостей (как в вашем работающем коде)
+    // 2. Функция для добавления полей дополнительных гостей
     function updateGuestFields() {
         const guestsCount = parseInt(guestsCountSelect.value);
         console.log('Количество гостей изменено на:', guestsCount);
