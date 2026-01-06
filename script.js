@@ -230,8 +230,8 @@ guestForm.addEventListener('submit', async function(e) {
             },
             body: JSON.stringify({
                 // Эти поля Formspree понимает автоматически
-                _subject: `🎉 Заявка на свадебную вечеринку от ${formData.name}`,
-                _replyto: 'no-reply@вашасвадьба.ru',
+                _subject: `Заявка на свадебную вечеринку от ${formData.name}`,
+                _replyto: 'katerine.abramova@gmail.com',
                 
                 // Все остальные данные
                 Имя: formData.name,
@@ -244,28 +244,28 @@ guestForm.addEventListener('submit', async function(e) {
                 "Любимый трек": formData.track || 'не указано',
                 
                 // Полный текст для удобного чтения в почте
-                message: `🎉 НОВАЯ ЗАЯВКА НА СВАДЕБНУЮ ВЕЧЕРИНКУ!
+                message: `НОВАЯ ЗАЯВКА НА СВАДЕБНУЮ ВЕЧЕРИНКУ!
 
-👤 КТО: ${formData.name}
-📞 ТЕЛЕФОН: ${formData.phone}
+КТО: ${formData.name}
+ТЕЛЕФОН: ${formData.phone}
 
-👥 ГОСТИ:
+ГОСТИ:
 • Всего: ${formData.guests_count} человека
 ${additionalGuests.length > 0 ? `• Имена: ${additionalGuests.join(', ')}\n` : ''}
 
-🎯 ОТВЕТЫ:
+ОТВЕТЫ:
 • Напитки: ${formData.drinks}
 • Ночевка: ${formData.stay}
 • Авто: ${formData.car}
 • Трек: ${formData.track || 'не указано'}
 
-📅 ОТПРАВЛЕНО: ${new Date().toLocaleString('ru-RU')}`
+ОТПРАВЛЕНО: ${new Date().toLocaleString('ru-RU')}`
             })
         });
         
         if (response.ok) {
             // УСПЕХ!
-            showFormMessage('✅ Анкета успешно отправлена!', 'success');
+            showFormMessage('Анкета успешно отправлена!', 'success');
             
             // Сбрасываем форму
             guestForm.reset();
@@ -290,7 +290,7 @@ ${additionalGuests.length > 0 ? `• Имена: ${additionalGuests.join(', ')}\
         
     } catch (error) {
         console.error('Ошибка:', error);
-        showFormMessage('❌ Ошибка отправки. Попробуйте еще раз.', 'error');
+        showFormMessage('Ошибка отправки. Попробуйте еще раз.', 'error');
         submitBtn.textContent = originalText;
         submitBtn.disabled = false;
     }
