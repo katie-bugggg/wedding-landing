@@ -1,3 +1,19 @@
+// ========== FIREBASE КОНФИГ ==========
+const firebaseConfig = {
+  databaseURL: "https://zhara-party-default-rtdb.europe-west1.firebasedatabase.app"
+  // Для Realtime Database достаточно только databaseURL
+};
+
+// Инициализация Firebase
+let database = null;
+try {
+  const app = firebase.initializeApp(firebaseConfig);
+  database = firebase.database(app);
+  console.log('✅ Firebase подключен!');
+} catch (error) {
+  console.error('❌ Ошибка Firebase:', error);
+}
+
 // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
 
 // Форма
