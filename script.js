@@ -1,18 +1,136 @@
-// ========== FIREBASE КОНФИГ ==========
-const firebaseConfig = {
-  databaseURL: "https://zhara-party-default-rtdb.europe-west1.firebasedatabase.app"
-  // Для Realtime Database достаточно только databaseURL
-};
+// ========== FIREBASE REST API ==========
+const FIREBASE_URL = 'https://zhara-party-default-rtdb.europe-west1.firebasedatabase.app';
 
-// Инициализация Firebase
-let database = null;
-try {
-  const app = firebase.initializeApp(firebaseConfig);
-  database = firebase.database(app);
-  console.log('✅ Firebase подключен!');
-} catch (error) {
-  console.error('❌ Ошибка Firebase:', error);
+// 1. Функция для сохранения результата игры
+async function saveGameResult(playerName, timeSeconds, moves) {
+    console.log('💾 Сохраняем результат игры...');
+    
+    const result = {
+        name: playerName,
+        time: timeSeconds, // в секундах для сортировки
+        timeDisplay: formatTime(timeSeconds), // для отображения
+        moves: moves,
+        timestamp: Date.now(),
+        date: new Date().toLocaleDateString('ru-RU')
+    };
+    
+    try {
+        // POST создает запись с автоматическим ID (например: -Nxyz123)
+        const response = await fetch(`${FIREBASE_URL}/leaderboard.json`, {
+            method: 'POST',
+            body: JSON.stringify(result),
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const data = await response.json();
+        console.log('✅ Результат сохранен в Firebase! ID:', data.name);
+        
+        // После сохранения обновляем таблицу
+        setTimeout(loadLeaderboard, 1000);
+        return data;
+        
+    } catch (error) {
+        console.error('❌ Ошибка сохранения в Firebase:', error);
+        // Fallback: сохраняем локально
+        saveToLocalStorage(result);
+        return null;
+    }
 }
+
+// 2. Функция для загрузки таблицы лидеров
+async function loadLeaderboard() {
+    console.log('📥 Загружаем таблицу лидеров...');
+    
+    try {
+        const response = await fetch(`${FIREBASE_URL}/leaderboard.json`);
+        const data = await response.json();
+        
+        if (!data) {
+            console.log('📭 Таблица лидеров пуста');
+            displayLeaderboard([]);
+            return;
+        }
+        
+        // Преобразуем объект в массив и добавляем ID
+        const resultsArray = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+        }));
+        
+        // Сортируем по времени (меньше = лучше)
+        resultsArray.sort((a, b) => a.time - b.time);
+        
+        console.log(`✅ Загружено ${resultsArray.length} результатов`);
+        displayLeaderboard(resultsArray);
+        
+    } catch (error) {
+        console.error('❌ Ошибка загрузки таблицы:', error);
+        // Fallback: локальные данные
+        const localData = getLocalLeaderboard();
+        displayLeaderboard(localData);
+    }
+}
+
+// 3. Вспомогательные функции (добавьте если нет):
+
+// Форматирование времени (секунды → "мм:сс")
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// Сохранение в localStorage (fallback)
+function saveToLocalStorage(result) {
+    try {
+        const key = `game_result_${Date.now()}`;
+        localStorage.setItem(key, JSON.stringify(result));
+        console.log('💾 Результат сохранен локально');
+    } catch (e) {
+        console.error('❌ Ошибка localStorage:', e);
+    }
+}
+
+// Загрузка из localStorage
+function getLocalLeaderboard() {
+    try {
+        const results = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key.startsWith('game_result_')) {
+                const data = JSON.parse(localStorage.getItem(key));
+                results.push(data);
+            }
+        }
+        return results.sort((a, b) => a.time - b.time);
+    } catch (e) {
+        console.error('❌ Ошибка чтения localStorage:', e);
+        return [];
+    }
+}
+
+// 4. Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Сайт загружен, подключаем Firebase REST API...');
+    
+    // Загружаем таблицу лидеров через 1 секунду
+    setTimeout(loadLeaderboard, 1000);
+    
+    // Проверяем подключение
+    fetch(`${FIREBASE_URL}/.json`)
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.leaderboard) {
+                console.log('✅ Firebase подключен, записей в leaderboard:', 
+                    Object.keys(data.leaderboard).length);
+            } else {
+                console.log('⚠️  Firebase подключен, но leaderboard пуст');
+            }
+        })
+        .catch(error => {
+            console.error('❌ Ошибка подключения к Firebase:', error);
+        });
+});
 
 // ========== ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ ==========
 
@@ -731,11 +849,13 @@ function showResultModal() {
     });
 }
 
-// ========== ТУРНИРНАЯ ТАБЛИЦА (Google Sheets) ==========
+// ========== ТУРНИРНАЯ ТАБЛИЦА ==========
 
-// Сохранение результата
-async function saveResult(name, moves, time) {
-    console.log('💾 Сохранение результата:', name, moves, time);
+// сохранение результата игры (Firebase REST API)
+
+async function saveResult(name, moves, timeInSeconds) {
+    console.log('💾 Сохранение результата:', name, moves, timeInSeconds);
+    
     try {
         const saveResultBtn = document.getElementById('save-result-btn');
         if (saveResultBtn) {
@@ -743,38 +863,47 @@ async function saveResult(name, moves, time) {
             saveResultBtn.textContent = 'Сохраняем...';
         }
 
-        // Отправляем результат на сервер
-        const response = await fetch(SCRIPT_URL, {
+        // ===== ИСПОЛЬЗУЕМ FIREBASE REST API =====
+        const result = {
+            name: name,
+            time: timeInSeconds, // время в секундах для сортировки
+            timeDisplay: formatTime(timeInSeconds), // форматированное время
+            moves: moves,
+            timestamp: Date.now(),
+            date: new Date().toLocaleDateString('ru-RU'),
+            game: 'memory' // метка игры
+        };
+
+        // Отправляем в Firebase
+        const response = await fetch(`${FIREBASE_URL}/leaderboard.json`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'saveMemoryScore',
-                data: { name: name, moves: moves, time: time }
-            })
+            body: JSON.stringify(result),
+            headers: { 'Content-Type': 'application/json' }
         });
 
-        const result = await response.json();
-        console.log('📨 Ответ сервера:', result);
+        const firebaseData = await response.json();
+        console.log('✅ Результат сохранен в Firebase! ID:', firebaseData.name);
 
-        if (result.success) {
-            // Сохраняем также локально
-            saveToLocalStorage(name, moves, time);
-            await loadLeaderboard();
-            showNotification(`🎉 Результат сохранен! Место в таблице: ${result.rank || 'топ-10'}`);
+        // Сохраняем также локально
+        saveToLocalStorageMemory(name, moves, timeInSeconds);
+        
+        // Обновляем таблицу лидеров
+        await loadLeaderboard();
+        
+        // Показываем уведомление
+        showNotification('🎉 Результат сохранен в таблице лидеров!');
 
-            setTimeout(() => {
-                const saveResultForm = document.getElementById('save-result-form');
-                if (saveResultForm) saveResultForm.style.display = 'none';
-            }, 2000);
-        } else {
-            saveToLocalStorage(name, moves, time);
-            loadLeaderboard();
-            showNotification('⚠️ Результат сохранен локально (ошибка сервера)');
-        }
+        // Скрываем форму через 2 секунды
+        setTimeout(() => {
+            const saveResultForm = document.getElementById('save-result-form');
+            if (saveResultForm) saveResultForm.style.display = 'none';
+        }, 2000);
 
     } catch (error) {
-        console.error('❌ Ошибка сохранения:', error);
-        saveToLocalStorage(name, moves, time);
+        console.error('❌ Ошибка сохранения в Firebase:', error);
+        
+        // Fallback: сохраняем только локально
+        saveToLocalStorageMemory(name, moves, timeInSeconds);
         loadLeaderboard();
         showNotification('⚠️ Результат сохранен локально (ошибка сети)');
 
@@ -787,25 +916,28 @@ async function saveResult(name, moves, time) {
     }
 }
 
-// Сохранение в localStorage как запасной вариант (ИСПРАВЛЕНА СТРОКА ~74)
-function saveToLocalStorage(name, moves, time) {
-    let leaderboard = getLeaderboard();
-
-    const newResult = {
-        name: name,
-        moves: moves,
-        time: time,
-        date: new Date().toISOString()
-    };
-
-    leaderboard.push(newResult);
-    leaderboard.sort((a, b) => {
-        if (a.moves !== b.moves) return a.moves - b.moves;
-        return a.time - b.time;
-    });
-
-    leaderboard = leaderboard.slice(0, 10);
-    localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard));
+// Сохранение в localStorage как запасной вариант
+function saveToLocalStorageMemory(name, moves, time) {
+    try {
+        const result = {
+            name: name,
+            moves: moves,
+            time: time,
+            timeDisplay: formatTime(time),
+            timestamp: Date.now(),
+            source: 'memory_game'
+        };
+        
+        const key = `memory_result_${Date.now()}`;
+        localStorage.setItem(key, JSON.stringify(result));
+        console.log('💾 Результат игры Memory сохранен локально');
+        
+        // Также сохраняем в общий leaderboard localStorage
+        saveToLocalStorage(result);
+        
+    } catch (e) {
+        console.error('❌ Ошибка сохранения в localStorage:', e);
+    }
 }
 
 // Уведомление
@@ -841,96 +973,77 @@ function showNotification(message) {
 // Загрузка турнирной таблицы
 
 async function loadLeaderboard() {
-    const leaderboardElement = document.getElementById('leaderboard');
-    if (!leaderboardElement) {
-        console.log('📊 Элемент leaderboard не найден');
-        return;
+    console.log('📥 Загружаем таблицу лидеров...');
+    
+    try {
+        const response = await fetch(`${FIREBASE_URL}/leaderboard.json`);
+        const data = await response.json();
+        
+        if (!data) {
+            console.log('📭 Таблица лидеров пуста');
+            // Показываем локальные данные
+            const localData = getLocalLeaderboardMemory();
+            displayLeaderboard(localData);
+            return;
+        }
+        
+        // Преобразуем объект в массив
+        const resultsArray = Object.keys(data).map(key => ({
+            id: key,
+            ...data[key]
+        }));
+        
+        // Фильтруем только результаты игры Memory (если есть метка)
+        const memoryResults = resultsArray.filter(item => 
+            item.game === 'memory' || !item.game // или все результаты
+        );
+        
+        // Сортируем по времени (меньше = лучше)
+        memoryResults.sort((a, b) => a.time - b.time);
+        
+        console.log(`✅ Загружено ${memoryResults.length} результатов игры Memory`);
+        displayLeaderboard(memoryResults);
+        
+    } catch (error) {
+        console.error('❌ Ошибка загрузки таблицы:', error);
+        // Fallback: локальные данные
+        const localData = getLocalLeaderboardMemory();
+        displayLeaderboard(localData);
+    }
+}
+
+// ========== ФОРМАТИРОВАНИЕ ВРЕМЕНИ ==========
+
+function formatTime(seconds) {
+    if (isNaN(seconds) || seconds === null || seconds === undefined) {
+        return '0:00';
     }
     
-    console.log('📥 Загрузка таблицы лидеров через JSONP...');
-    leaderboardElement.innerHTML = `
-        <div class="loading">
-            <div class="spinner"></div>
-            <p>Загружаем таблицу лидеров...</p>
-        </div>
-    `;
-    
-    return new Promise((resolve) => {
-        // Создаем уникальное имя callback функции
-        const callbackName = 'leaderboardCallback_' + Date.now();
-        
-        // Создаем глобальную callback функцию
-        window[callbackName] = function(data) {
-            console.log('✅ JSONP данные получены:', data);
-            
-            // Убираем callback чтобы не засорять память
-            delete window[callbackName];
-            
-            // Удаляем script тег
-            if (script.parentNode) {
-                script.parentNode.removeChild(script);
-            }
-            
-            // Обрабатываем данные
-            if (Array.isArray(data) && data.length > 0) {
-                displayLeaderboard(data, true);
-            } else {
-                const localLeaderboard = getLeaderboard();
-                if (localLeaderboard.length > 0) {
-                    displayLeaderboard(localLeaderboard, false);
-                } else {
-                    showNoResults();
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
+
+// ========== ЛОКАЛЬНЫЕ ДАННЫЕ ДЛЯ MEMORY ==========
+
+function getLocalLeaderboardMemory() {
+    try {
+        const results = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith('memory_result_') || key.startsWith('game_result_'))) {
+                const data = JSON.parse(localStorage.getItem(key));
+                if (data && (data.source === 'memory_game' || !data.source)) {
+                    results.push(data);
                 }
             }
-            
-            resolve();
-        };
-        
-        // Создаем script тег для JSONP запроса
-        const script = document.createElement('script');
-        script.src = `${SCRIPT_URL}?action=getTopScores&callback=${callbackName}&t=${Date.now()}`;
-        
-        // Обработчик ошибок
-        script.onerror = function() {
-            console.log('❌ JSONP запрос не удался, используем локальные данные');
-            
-            // Очищаем
-            delete window[callbackName];
-            if (script.parentNode) {
-                script.parentNode.removeChild(script);
-            }
-            
-            const localLeaderboard = getLeaderboard();
-            if (localLeaderboard.length > 0) {
-                displayLeaderboard(localLeaderboard, false);
-            } else {
-                showNoResults();
-            }
-            
-            resolve();
-        };
-        
-        // Добавляем script на страницу (запускает запрос)
-        document.head.appendChild(script);
-        
-        // Таймаут на случай если callback не придет
-        setTimeout(() => {
-            if (window[callbackName]) {
-                console.log('⏰ JSONP таймаут, используем локальные данные');
-                delete window[callbackName];
-                if (script.parentNode) {
-                    script.parentNode.removeChild(script);
-                }
-                
-                const localLeaderboard = getLeaderboard();
-                if (localLeaderboard.length > 0) {
-                    displayLeaderboard(localLeaderboard, false);
-                } else {
-                    showNoResults();
-                }
-            }
-        }, 5000); // 5 секунд таймаут
-    });
+        }
+        // Сортируем по времени
+        return results.sort((a, b) => (a.time || 0) - (b.time || 0));
+    } catch (e) {
+        console.error('❌ Ошибка чтения localStorage:', e);
+        return [];
+    }
 }
 
 // Отображение таблицы лидеров
@@ -996,10 +1109,10 @@ function showNoResults() {
 
     leaderboardElement.innerHTML = `
         <div class="no-results">
-            <p>🎮 Пока нет результатов</p>
+            <p>Пока нет результатов</p>
             <p>Будьте первым!</p>
             <button id="refresh-leaderboard" class="refresh-btn">
-                🔄 Обновить таблицу
+                Обновить таблицу
             </button>
         </div>
     `;
