@@ -759,7 +759,7 @@ async function loadLeaderboard() {
         console.log('📊 Элемент leaderboard не найден');
         return;
     }
-
+    
     console.log('📥 Загрузка таблицы лидеров...');
     leaderboardElement.innerHTML = `
         <div class="loading">
@@ -767,28 +767,31 @@ async function loadLeaderboard() {
             <p>Загружаем таблицу лидеров...</p>
         </div>
     `;
-
-    const response = await fetch(SCRIPT_URL, {
+    
+    try {
+        // Отправляем POST запрос вместо GET
+        const response = await fetch(SCRIPT_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ action: 'getTopScores' })
         });
-    const cloudLeaderboard = await response.json();
+        
+        const cloudLeaderboard = await response.json();
         console.log('☁️ Облачная таблица:', cloudLeaderboard);
-
-        // ВАЖНО: проверяем Array.isArray() и .length
-if (Array.isArray(cloudLeaderboard) && cloudLeaderboard.length > 0) {
-    displayLeaderboard(cloudLeaderboard, true);
-} else {
-    // Используем локальные данные
-    const localLeaderboard = getLeaderboard();
-    if (localLeaderboard.length > 0) {
-        displayLeaderboard(localLeaderboard, false);
-    } else {
-        showNoResults();
-    }
-}
-
+        
+        // ВАЖНО: проверяем что это массив и он не пустой
+        if (Array.isArray(cloudLeaderboard) && cloudLeaderboard.length > 0) {
+            displayLeaderboard(cloudLeaderboard, true);
+        } else {
+            // Используем локальные данные
+            const localLeaderboard = getLeaderboard();
+            if (localLeaderboard.length > 0) {
+                displayLeaderboard(localLeaderboard, false);
+            } else {
+                showNoResults();
+            }
+        }
+        
     } catch (error) {
         console.error('❌ Ошибка загрузки из облака:', error);
         const localLeaderboard = getLeaderboard();
