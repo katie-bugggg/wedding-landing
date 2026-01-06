@@ -72,7 +72,7 @@ function initResponseForm() {
     // 1. Находим элементы по их ID из HTML
     guestsCountSelect = document.getElementById('guests-count');
     additionalGuestsContainer = document.getElementById('additional-guests');
-    guestForm = document.getElementById('guest-form');
+    guestForm = document.getElementById('form');
     
     console.log('Найдены элементы:', {
         guestsCountSelect: !!guestsCountSelect,
