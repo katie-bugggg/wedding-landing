@@ -125,6 +125,7 @@ function initResponseForm() {
         console.log('Инициализируем поля с выбранным значением:', guestsCountSelect.value);
         updateGuestFields();
     }
+}
     
     // Обработчик формы (formspree):
 guestForm.addEventListener('submit', async function(e) {
