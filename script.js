@@ -64,6 +64,54 @@ function updateCountdown() {
     }
 }
 
+// ========== ПОКАЗ СООБЩЕНИЙ ФОРМЫ ==========
+function showFormMessage(message, type = 'info') {
+    // Удаляем старое сообщение если есть
+    const existingMessage = document.querySelector('.form-message');
+    if (existingMessage) {
+        existingMessage.remove();
+    }
+    
+    // Создаем новое сообщение
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `form-message ${type}`;
+    messageDiv.textContent = message;
+    
+    // Стили сообщения
+    messageDiv.style.cssText = `
+        margin: 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: 500;
+        font-size: 16px;
+        background-color: ${type === 'success' ? 'rgba(74, 108, 74, 0.1)' : 'rgba(255, 0, 0, 0.1)'};
+        color: ${type === 'success' ? '#4a6c4a' : '#d32f2f'};
+        border: 1px solid ${type === 'success' ? '#4a6c4a' : '#d32f2f'};
+    `;
+    
+    // Вставляем перед кнопкой отправки
+    const submitBtn = document.querySelector('#form button[type="submit"]');
+    if (submitBtn && submitBtn.parentNode) {
+        submitBtn.parentNode.insertBefore(messageDiv, submitBtn);
+    }
+    
+    // Автоматически скрываем успешные сообщения через 5 секунд
+    if (type === 'success') {
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.style.transition = 'opacity 0.5s';
+                messageDiv.style.opacity = '0';
+                setTimeout(() => {
+                    if (messageDiv.parentNode) {
+                        messageDiv.remove();
+                    }
+                }, 500);
+            }
+        }, 5000);
+    }
+}
+
 // ========== ФОРМА ОТВЕТОВ ==========
 
 function initResponseForm() {
@@ -72,7 +120,7 @@ function initResponseForm() {
     // 1. Находим элементы по их ID из HTML
     guestsCountSelect = document.getElementById('guests-count');
     additionalGuestsContainer = document.getElementById('additional-guests');
-    guestForm = document.getElementById('form');
+    guestForm = document.getElementById('guest-form');
     
     console.log('Найдены элементы:', {
         guestsCountSelect: !!guestsCountSelect,
@@ -91,7 +139,7 @@ function initResponseForm() {
     }
     
     if (!guestForm) {
-        console.error('❌ Элемент #form не найден!');
+        console.error('❌ Элемент #guest-form не найден!');
         return;
     }
     
