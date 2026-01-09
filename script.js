@@ -399,7 +399,7 @@ ${additionalGuests.length > 0 ? `• Имена: ${additionalGuests.join(', ')}\
         
         if (response.ok) {
             // УСПЕХ!
-            showFormMessage('Анкета успешно отправлена!', 'success');
+            showFormMessage('Анкета успешно отправлена! Если ваши планы изменятся, пожалуйста, дайте нам знать', 'success');
             
             // Сбрасываем форму
             guestForm.reset();
