@@ -214,7 +214,7 @@ section {
 }
 
 #header .header-text > p {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
 }
 
 .header-photos {
@@ -296,7 +296,7 @@ section {
     z-index: 10;
 }
 
-/* Плашки даты и места - ИСПРАВЛЕНО: обе плашки теперь выровнены по левому краю */
+/* Плашки даты и места */
 .date-location-container {
     display: flex;
     flex-direction: column;
@@ -318,7 +318,6 @@ section {
     backdrop-filter: blur(5px);
     max-width: 100%;
     width: 100%;
-    /* Исправление: добавлено выравнивание по левому краю */
     text-align: left;
     justify-content: flex-start;
 }
@@ -327,12 +326,10 @@ section {
     margin-right: 10px;
     color: var(--accent-color);
     font-size: 1.3rem;
-    /* Исправление: предотвращаем изменение выравнивания иконок */
     flex-shrink: 0;
 }
 
 .date-box span, .location-box span {
-    /* Исправление: текст плашек выравнивается по левому краю */
     text-align: left;
     width: 100%;
 }
@@ -519,7 +516,7 @@ section {
     }
 
     .header-text p {
-        font-size: 1.1rem;
+        font-size: 0.9rem;
         padding: 0;
     }
 
@@ -621,7 +618,7 @@ section {
     }
 
     .header-text p {
-        font-size: 1rem;
+        font-size: 0.9rem;
         padding: 0 5px;
     }
 
