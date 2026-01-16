@@ -293,9 +293,9 @@ function initResponseForm() {
                 const div = document.createElement('div');
                 div.className = 'form-group';
                 div.innerHTML = `
-                    <label for="guest${i}">Имя гостя ${i}:</label>
+                    <label for="guest${i}">Name Gast ${i}:</label>
                     <input type="text" id="guest${i}" name="guest${i}" 
-                           class="form-control" placeholder="Введите имя гостя">
+                           class="form-control" placeholder="Name des Gasts eingeben">
                 `;
                 additionalGuestsContainer.appendChild(div);
             }
