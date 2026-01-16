@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Katja & Andre | Hochzeitsfeier</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="favicon.svg">
+    <link rel="mask-icon" href="favicon.svg" color="#4a6c4a">
+    <meta name="theme-color" content="#4a6c4a">
+</head>
+<body>
+    <!-- Feste Navigation -->
+    <nav class="fixed-menu">
+        <div class="container">
+            <a href="#header" class="logo">
+                <!-- Linker Zweig (gespiegelt) -->
+                <div class="logo-branch left-branch">
+                    <svg width="28" height="28" viewBox="0 0 26 26">
+                        <g>
+                            <path fill="#4a6c4a" d="M21.184,2.555c0.688,1.202,0.125,1.662-0.436,1.977c-0.561,0.314-1.235,0.425-1.921-0.774C18.136,2.556,18.11,0,18.11,0S20.494,1.354,21.184,2.555z"/>
+                            <path fill="#4a6c4a" d="M24.16,6.004c-0.595,1.251-1.292,1.053-1.87,0.775c-0.581-0.283-1.056-0.773-0.467-2.02c0.595-1.254,2.674-2.736,2.674-2.736S24.751,4.754,24.16,6.004z"/>
+                            <path fill="#4a6c4a" d="M24.564,10.728c-0.897,1.056-1.521,0.685-2.006,0.267c-0.487-0.421-0.82-1.018,0.07-2.071c0.895-1.06,3.291-1.954,3.291-1.954S25.458,9.672,24.564,10.728z"/>
+                            <path fill="#4a6c4a" d="M20.565,9.336c1.229,0.716,0.978,1.396,0.65,1.949c-0.329,0.554-0.863,0.984-2.09,0.271c-1.232-0.715-2.59-2.946-2.59-2.946S19.333,8.622,20.565,9.336z"/>
+                            <path fill="#4a6c4a" d="M22.944,15.583c-1.202,0.688-1.662,0.128-1.979-0.431c-0.315-0.561-0.426-1.237,0.771-1.925c1.201-0.691,3.759-0.721,3.759-0.721S24.145,14.893,22.944,15.583z"/>
+                            <path fill="#4a6c4a" d="M19.835,13.057c0.88,1.121,0.393,1.659-0.114,2.052c-0.509,0.396-1.169,0.596-2.045-0.521c-0.878-1.121-1.312-3.695-1.312-3.695S18.956,11.94,19.835,13.057z"/>
+                            <path fill="#4a6c4a" d="M20.428,19.678c-1.366,0.24-1.607-0.443-1.716-1.076c-0.108-0.636,0.015-1.307,1.372-1.55c1.367-0.243,3.783,0.597,3.783,0.597S21.786,19.434,20.428,19.678z"/>
+                            <path fill="#4a6c4a" d="M18.198,16.285c0.601,1.292,0,1.704-0.584,1.971c-0.587,0.266-1.271,0.311-1.866-0.975c-0.601-1.293-0.432-3.9-0.432-3.9S17.602,14.995,18.198,16.285z"/>
+                            <path fill="#4a6c4a" d="M15.474,18.787c0.245,1.4-0.438,1.645-1.07,1.753c-0.636,0.103-1.312-0.028-1.555-1.424c-0.245-1.404,0.587-3.88,0.587-3.88S15.228,17.385,15.474,18.787z"/>
+                            <path fill="#4a6c4a" d="M16.792,22.827c-1.409-0.209-1.424-0.937-1.327-1.57c0.104-0.638,0.44-1.234,1.843-1.024c1.409,0.211,3.496,1.783,3.496,1.783S18.197,23.037,16.792,22.827z"/>
+                            <path fill="#4a6c4a" d="M12.398,21.047c0.102,1.42-0.603,1.594-1.244,1.637c-0.643,0.037-1.3-0.164-1.403-1.576c-0.098-1.422,0.983-3.799,0.983-3.799S12.299,19.63,12.398,21.047z"/>
+                            <path fill="#4a6c4a" d="M12.762,25.197c-1.344-0.477-1.221-1.192-1.001-1.796c0.221-0.606,0.668-1.127,2.005-0.654c1.342,0.477,3.088,2.419,3.088,2.419S14.1,25.67,12.762,25.197z"/>
+                            <path fill="#4a6c4a" d="M20.163,5.464c1.366,0.37,1.298,1.096,1.126,1.712c-0.174,0.621-0.579,1.175-1.939,0.806c-1.371-0.37-3.243-2.17-3.243-2.17S18.798,5.095,20.163,5.464z"/>
+                            <path fill="#4a6c4a" d="M10.638,23.44c0,0-6.453,2.538-10.479,1.634C-0.157,25.45,0.605,26,0.605,26S6.465,26.091,10.638,23.44z"/>
+                        </g>
+                    </svg>
+                </div>
+                
+                <span class="logo-text">K&A</span>
+                
+                <!-- Rechter Zweig -->
+                <div class="logo-branch right-branch">
+                    <svg width="28" height="28" viewBox="0 0 26 26">
+                        <g>
+                            <path fill="#4a6c4a" d="M21.184,2.555c0.688,1.202,0.125,1.662-0.436,1.977c-0.561,0.314-1.235,0.425-1.921-0.774C18.136,2.556,18.11,0,18.11,0S20.494,1.354,21.184,2.555z"/>
+                            <path fill="#4a6c4a" d="M24.16,6.004c-0.595,1.251-1.292,1.053-1.87,0.775c-0.581-0.283-1.056-0.773-0.467-2.02c0.595-1.254,2.674-2.736,2.674-2.736S24.751,4.754,24.16,6.004z"/>
+                            <path fill="#4a6c4a" d="M24.564,10.728c-0.897,1.056-1.521,0.685-2.006,0.267c-0.487-0.421-0.82-1.018,0.07-2.071c0.895-1.06,3.291-1.954,3.291-1.954S25.458,9.672,24.564,10.728z"/>
+                            <path fill="#4a6c4a" d="M20.565,9.336c1.229,0.716,0.978,1.396,0.65,1.949c-0.329,0.554-0.863,0.984-2.09,0.271c-1.232-0.715-2.59-2.946-2.59-2.946S19.333,8.622,20.565,9.336z"/>
+                            <path fill="#4a6c4a" d="M22.944,15.583c-1.202,0.688-1.662,0.128-1.979-0.431c-0.315-0.561-0.426-1.237,0.771-1.925c1.201-0.691,3.759-0.721,3.759-0.721S24.145,14.893,22.944,15.583z"/>
+                            <path fill="#4a6c4a" d="M19.835,13.057c0.88,1.121,0.393,1.659-0.114,2.052c-0.509,0.396-1.169,0.596-2.045-0.521c-0.878-1.121-1.312-3.695-1.312-3.695S18.956,11.94,19.835,13.057z"/>
+                            <path fill="#4a6c4a" d="M20.428,19.678c-1.366,0.24-1.607-0.443-1.716-1.076c-0.108-0.636,0.015-1.307,1.372-1.55c1.367-0.243,3.783,0.597,3.783,0.597S21.786,19.434,20.428,19.678z"/>
+                            <path fill="#4a6c4a" d="M18.198,16.285c0.601,1.292,0,1.704-0.584,1.971c-0.587,0.266-1.271,0.311-1.866-0.975c-0.601-1.293-0.432-3.9-0.432-3.9S17.602,14.995,18.198,16.285z"/>
+                            <path fill="#4a6c4a" d="M15.474,18.787c0.245,1.4-0.438,1.645-1.07,1.753c-0.636,0.103-1.312-0.028-1.555-1.424c-0.245-1.404,0.587-3.88,0.587-3.88S15.228,17.385,15.474,18.787z"/>
+                            <path fill="#4a6c4a" d="M16.792,22.827c-1.409-0.209-1.424-0.937-1.327-1.57c0.104-0.638,0.44-1.234,1.843-1.024c1.409,0.211,3.496,1.783,3.496,1.783S18.197,23.037,16.792,22.827z"/>
+                            <path fill="#4a6c4a" d="M12.398,21.047c0.102,1.42-0.603,1.594-1.244,1.637c-0.643,0.037-1.3-0.164-1.403-1.576c-0.098-1.422,0.983-3.799,0.983-3.799S12.299,19.63,12.398,21.047z"/>
+                            <path fill="#4a6c4a" d="M12.762,25.197c-1.344-0.477-1.221-1.192-1.001-1.796c0.221-0.606,0.668-1.127,2.005-0.654c1.342,0.477,3.088,2.419,3.088,2.419S14.1,25.67,12.762,25.197z"/>
+                            <path fill="#4a6c4a" d="M20.163,5.464c1.366,0.37,1.298,1.096,1.126,1.712c-0.174,0.621-0.579,1.175-1.939,0.806c-1.371-0.37-3.243-2.17-3.243-2.17S18.798,5.095,20.163,5.464z"/>
+                            <path fill="#4a6c4a" d="M10.638,23.44c0,0-6.453,2.538-10.479,1.634C-0.157,25.45,0.605,26,0.605,26S6.465,26.091,10.638,23.44z"/>
+                        </g>
+                    </svg>
+                </div>
+            </a>
+
+            <div class="menu-links">
+                <a href="#where">Ort</a>
+                <a href="#schedule">Ablauf</a>
+                <a href="#dresscode">Dresscode</a>
+                <a href="#org">Wichtiges</a>
+                <a href="#accommodation">Übernachtung</a>
+                <a href="#map-section">Anfahrt</a>
+                <a href="#form" class="menu-button">Ich komme!</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Feste Navigation mit Hamburger -->
+    <nav class="fixed-menu">
+        <div class="container">
+            <a href="#header" class="logo">
+                <!-- Linker Zweig (gespiegelt) -->
+                <div class="logo-branch left-branch">
+                    <svg width="28" height="28" viewBox="0 0 26 26">
+                        <g>
+                            <path fill="#4a6c4a" d="M21.184,2.555c0.688,1.202,0.125,1.662-0.436,1.977c-0.561,0.314-1.235,0.425-1.921-0.774C18.136,2.556,18.11,0,18.11,0S20.494,1.354,21.184,2.555z"/>
+                            <path fill="#4a6c4a" d="M24.16,6.004c-0.595,1.251-1.292,1.053-1.87,0.775c-0.581-0.283-1.056-0.773-0.467-2.02c0.595-1.254,2.674-2.736,2.674-2.736S24.751,4.754,24.16,6.004z"/>
+                            <path fill="#4a6c4a" d="M24.564,10.728c-0.897,1.056-1.521,0.685-2.006,0.267c-0.487-0.421-0.82-1.018,0.07-2.071c0.895-1.06,3.291-1.954,3.291-1.954S25.458,9.672,24.564,10.728z"/>
+                            <path fill="#4a6c4a" d="M20.565,9.336c1.229,0.716,0.978,1.396,0.65,1.949c-0.329,0.554-0.863,0.984-2.09,0.271c-1.232-0.715-2.59-2.946-2.59-2.946S19.333,8.622,20.565,9.336z"/>
+                            <path fill="#4a6c4a" d="M22.944,15.583c-1.202,0.688-1.662,0.128-1.979-0.431c-0.315-0.561-0.426-1.237,0.771-1.925c1.201-0.691,3.759-0.721,3.759-0.721S24.145,14.893,22.944,15.583z"/>
+                            <path fill="#4a6c4a" d="M19.835,13.057c0.88,1.121,0.393,1.659-0.114,2.052c-0.509,0.396-1.169,0.596-2.045-0.521c-0.878-1.121-1.312-3.695-1.312-3.695S18.956,11.94,19.835,13.057z"/>
+                            <path fill="#4a6c4a" d="M20.428,19.678c-1.366,0.24-1.607-0.443-1.716-1.076c-0.108-0.636,0.015-1.307,1.372-1.55c1.367-0.243,3.783,0.597,3.783,0.597S21.786,19.434,20.428,19.678z"/>
+                            <path fill="#4a6c4a" d="M18.198,16.285c0.601,1.292,0,1.704-0.584,1.971c-0.587,0.266-1.271,0.311-1.866-0.975c-0.601-1.293-0.432-3.9-0.432-3.9S17.602,14.995,18.198,16.285z"/>
+                            <path fill="#4a6c4a" d="M15.474,18.787c0.245,1.4-0.438,1.645-1.07,1.753c-0.636,0.103-1.312-0.028-1.555-1.424c-0.245-1.404,0.587-3.88,0.587-3.88S15.228,17.385,15.474,18.787z"/>
+                            <path fill="#4a6c4a" d="M16.792,22.827c-1.409-0.209-1.424-0.937-1.327-1.57c0.104-0.638,0.44-1.234,1.843-1.024c1.409,0.211,3.496,1.783,3.496,1.783S18.197,23.037,16.792,22.827z"/>
+                            <path fill="#4a6c4a" d="M12.398,21.047c0.102,1.42-0.603,1.594-1.244,1.637c-0.643,0.037-1.3-0.164-1.403-1.576c-0.098-1.422,0.983-3.799,0.983-3.799S12.299,19.63,12.398,21.047z"/>
+                            <path fill="#4a6c4a" d="M12.762,25.197c-1.344-0.477-1.221-1.192-1.001-1.796c0.221-0.606,0.668-1.127,2.005-0.654c1.342,0.477,3.088,2.419,3.088,2.419S14.1,25.67,12.762,25.197z"/>
+                            <path fill="#4a6c4a" d="M20.163,5.464c1.366,0.37,1.298,1.096,1.126,1.712c-0.174,0.621-0.579,1.175-1.939,0.806c-1.371-0.37-3.243-2.17-3.243-2.17S18.798,5.095,20.163,5.464z"/>
+                            <path fill="#4a6c4a" d="M10.638,23.44c0,0-6.453,2.538-10.479,1.634C-0.157,25.45,0.605,26,0.605,26S6.465,26.091,10.638,23.44z"/>
+                        </g>
+                    </svg>
+                </div>
+                
+                <span class="logo-text">K&A</span>
+                
+                <!-- Rechter Zweig -->
+                <div class="logo-branch right-branch">
+                    <svg width="28" height="28" viewBox="0 0 26 26">
+                        <g>
+                            <path fill="#4a6c4a" d="M21.184,2.555c0.688,1.202,0.125,1.662-0.436,1.977c-0.561,0.314-1.235,0.425-1.921-0.774C18.136,2.556,18.11,0,18.11,0S20.494,1.354,21.184,2.555z"/>
+                            <path fill="#4a6c4a" d="M24.16,6.004c-0.595,1.251-1.292,1.053-1.87,0.775c-0.581-0.283-1.056-0.773-0.467-2.02c0.595-1.254,2.674-2.736,2.674-2.736S24.751,4.754,24.16,6.004z"/>
+                            <path fill="#4a6c4a" d="M24.564,10.728c-0.897,1.056-1.521,0.685-2.006,0.267c-0.487-0.421-0.82-1.018,0.07-2.071c0.895-1.06,3.291-1.954,3.291-1.954S25.458,9.672,24.564,10.728z"/>
+                            <path fill="#4a6c4a" d="M20.565,9.336c1.229,0.716,0.978,1.396,0.65,1.949c-0.329,0.554-0.863,0.984-2.09,0.271c-1.232-0.715-2.59-2.946-2.59-2.946S19.333,8.622,20.565,9.336z"/>
+                            <path fill="#4a6c4a" d="M22.944,15.583c-1.202,0.688-1.662,0.128-1.979-0.431c-0.315-0.561-0.426-1.237,0.771-1.925c1.201-0.691,3.759-0.721,3.759-0.721S24.145,14.893,22.944,15.583z"/>
+                            <path fill="#4a6c4a" d="M19.835,13.057c0.88,1.121,0.393,1.659-0.114,2.052c-0.509,0.396-1.169,0.596-2.045-0.521c-0.878-1.121-1.312-3.695-1.312-3.695S18.956,11.94,19.835,13.057z"/>
+                            <path fill="#4a6c4a" d="M20.428,19.678c-1.366,0.24-1.607-0.443-1.716-1.076c-0.108-0.636,0.015-1.307,1.372-1.55c1.367-0.243,3.783,0.597,3.783,0.597S21.786,19.434,20.428,19.678z"/>
+                            <path fill="#4a6c4a" d="M18.198,16.285c0.601,1.292,0,1.704-0.584,1.971c-0.587,0.266-1.271,0.311-1.866-0.975c-0.601-1.293-0.432-3.9-0.432-3.9S17.602,14.995,18.198,16.285z"/>
+                            <path fill="#4a6c4a" d="M15.474,18.787c0.245,1.4-0.438,1.645-1.07,1.753c-0.636,0.103-1.312-0.028-1.555-1.424c-0.245-1.404,0.587-3.88,0.587-3.88S15.228,17.385,15.474,18.787z"/>
+                            <path fill="#4a6c4a" d="M16.792,22.827c-1.409-0.209-1.424-0.937-1.327-1.57c0.104-0.638,0.44-1.234,1.843-1.024c1.409,0.211,3.496,1.783,3.496,1.783S18.197,23.037,16.792,22.827z"/>
+                            <path fill="#4a6c4a" d="M12.398,21.047c0.102,1.42-0.603,1.594-1.244,1.637c-0.643,0.037-1.3-0.164-1.403-1.576c-0.098-1.422,0.983-3.799,0.983-3.799S12.299,19.63,12.398,21.047z"/>
+                            <path fill="#4a6c4a" d="M12.762,25.197c-1.344-0.477-1.221-1.192-1.001-1.796c0.221-0.606,0.668-1.127,2.005-0.654c1.342,0.477,3.088,2.419,3.088,2.419S14.1,25.67,12.762,25.197z"/>
+                            <path fill="#4a6c4a" d="M20.163,5.464c1.366,0.37,1.298,1.096,1.126,1.712c-0.174,0.621-0.579,1.175-1.939,0.806c-1.371-0.37-3.243-2.17-3.243-2.17S18.798,5.095,20.163,5.464z"/>
+                            <path fill="#4a6c4a" d="M10.638,23.44c0,0-6.453,2.538-10.479,1.634C-0.157,25.45,0.605,26,0.605,26S6.465,26.091,10.638,23.44z"/>
+                        </g>
+                    </svg>
+                </div>
+            </a>
+
+            <div class="menu-links">
+                <a href="#where">Ort</a>
+                <a href="#schedule">Ablauf</a>
+                <a href="#dresscode">Dresscode</a>
+                <a href="#org">Wichtiges</a>
+                <a href="#accommodation">Übernachtung</a>
+                <a href="#map-section">Anfahrt</a>
+                <a href="#form" class="menu-button">Ich komme!</a>
+            </div>
+            
+            <!-- Hamburger-Menü -->
+            <button class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+<!-- Header -->
+<header id="header">
+    <div class="container header-content">
+        <div class="header-text">
+            <h1>Verpasst nicht die Party des Sommers</h1>
+            <p>Wir werden eine Familie und laden euch ein, diesen freudigen Anlass mit uns zu teilen</p>
+            <!-- Datum und Ort Badges -->
+            <div class="date-location-container">
+                <div class="date-box">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>13.-14. Juni 2026</span>
+                </div>
+                <div class="location-box">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Ladigino, Oblast Kaliningrad</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-photos">
+            <!-- Polaroid-Fotoblock -->
+            <div class="polaroid-stack">
+                <div class="polaroid photo1">
+                    <img src="images/couple-1.jpg" alt="Katja und Andre am Strand">
+                    <div class="polaroid-caption">Wir am Meer</div>
+                </div>
+                <div class="polaroid photo2">
+                    <img src="images/couple-2.jpg" alt="Katja und Andre in der Stadt">
+                    <div class="polaroid-caption">Spaziergang auf der Kneiphof-Insel</div>
+                </div>
+                <div class="polaroid photo3">
+                    <img src="images/couple-3.jpg" alt="Katja und Andre auf der Kurischen Nehrung">
+                    <div class="polaroid-caption">Wochenende auf der Kurischen Nehrung</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scroll-Pfeil -->
+    <a href="#where" class="scroll-down"><i class="fas fa-chevron-down"></i></a>
+</header>
+
+    <!-- Abschnitt 2: Location -->
+    <section id="where">
+        <div class="container">
+        <h2>Der Ort</h2>
+        <p class="location-info">Gästehaus "Kiefern, Tannen & Bucht" in Ladigino</p>
+
+        <div class="gallery">
+            <div class="polaroid-item gallery-polaroid">
+                <img src="images/venue-1.jpg" alt="Grundstück des Gästehauses">
+            </div>
+            <div class="polaroid-item gallery-polaroid">
+                <img src="images/venue-2.jpg" alt="Grillbereich">
+            </div>
+            <div class="polaroid-item gallery-polaroid">
+                <img src="images/venue-3.jpg" alt="Sauna">
+            </div>
+            <div class="polaroid-item gallery-polaroid">
+                <img src="images/venue-4.jpg" alt="Blick auf die Bucht">
+            </div>
+        </div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="#map-section" class="btn">Anfahrt</a>
+        </div>
+    </section>
+
+    <!-- Abschnitt 3: Ablauf -->
+    <section id="schedule" style="background-color: rgba(216, 227, 216, 0.1);">
+        <div class="container">
+            <h2>Was euch erwartet</h2>
+
+            <div class="timeline-container">
+                <div class="timeline-item">
+                    <div class="timeline-date">Tag 1 - 13. Juni</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">16:00 Uhr</div>
+                        <p>Gäste treffen ein, Begrüßungen, Fotos in der Fotozone</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">17:00 Uhr</div>
+                        <p>Es wird gegessen! Genießt die Köstlichkeiten des Küchenchefs und leert die Bar</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">18:00 Uhr</div>
+                        <p>Unterhaltungsprogramm (keine "Stift-in-die-Flasche"-Wettbewerbe, versprochen)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">20:00 Uhr</div>
+                        <p>Tanzen (zeigt eure Moves und verbrennt die Kebab-Kalorien)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">21:00 Uhr</div>
+                        <p>Ende des Outdoor-Programms, wir gehen rein zum Tanzen und Karaoke-Singen (auch Vögel brauchen ihren Schönheitsschlaf)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">00:00 Uhr</div>
+                        <p>Ausklang. Zeit zum Ausruhen</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">Tag 2 - 14. Juni</div>
+                    <div class="timeline-content">
+                        <div class="timeline-time">9:00 Uhr</div>
+                        <p>Frühstück (Selbstbedienung, alles im Kühlschrank steht euch zur Verfügung)</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">10:00 Uhr</div>
+                        <p>Freizeit</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">11:00 Uhr</div>
+                        <p>Spaziergang zur Bucht</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">13:00 Uhr</div>
+                        <p>Grillen</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">14:00 - 19:00 Uhr</div>
+                        <p>Saunazeit</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">17:00 Uhr</div>
+                        <p>Wettbewerbe: Pool-Volleyball und Beer Pong!</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-time">18:00 Uhr</div>
+                        <p>Grillen, zweite Runde</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                <div class="timeline-content">
+                    <div class="timeline-time">20:00 Uhr</div>
+                    <p>Abschluss und Verabschiedung</p>
+                </div>
+            </div>
+            
+        </div> <!-- timeline-container schließen -->
+        
+        <!-- Hinweis NACH dem timeline-container -->
+        <div class="about__note">
+            <p>* Die Zeiten können sich je nach Wetter und unserer Stimmung leicht ändern</p>
+        </div>
+        
+    </div> <!-- container schließen -->
+</section>
+
+    <!-- Abschnitt 4: Dresscode -->
+<section id="dresscode">
+    <div class="container">
+        <h2>Dresscode</h2>
+
+        <p style="text-align: center; margin-bottom: 30px; font-style: italic;">
+            Inspiriert von der Ostseeküste: Sandstrände und Kiefernwälder. Tragt Kleidung in Sand- und Kieferngrün-Tönen.
+        </p>
+
+        <div class="color-palette">
+            <div class="color" title="Pergament"></div>
+            <div class="color" title="Sand"></div>
+            <div class="color" title="Oliv"></div>
+            <div class="color" title="Salbei"></div>
+            <div class="color" title="Waldgrün"></div>
+            <div class="color" title="Dunkelgrün"></div>
+        </div>
+
+        <p style="text-align: center; margin: 40px 0 20px; font-weight: 500; color: var(--primary-green);">
+            Stil-Inspiration
+        </p>
+
+        <!-- Pinterest-ähnliche Galerie -->
+        <div class="pinterest-grid">
+            <!-- Erste Reihe: Damen -->
+            <div class="pinterest-item">
+                <img src="images/ladies-1.webp" alt="Damen-Outfit 1" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/ladies-2.webp" alt="Damen-Outfit 2" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/ladies-3.webp" alt="Damen-Outfit 3" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/ladies-4.webp" alt="Damen-Outfit 4" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/ladies-5.webp" alt="Damen-Outfit 5" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/ladies-6.webp" alt="Damen-Outfit 6" loading="lazy">
+            </div>
+            
+            <!-- Zweite Reihe: Herren -->
+            <div class="pinterest-item">
+                <img src="images/gents-1.webp" alt="Herren-Outfit 1" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/gents-2.webp" alt="Herren-Outfit 2" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/gents-3.webp" alt="Herren-Outfit 3" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/gents-4.webp" alt="Herren-Outfit 4" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/gents-5.webp" alt="Herren-Outfit 5" loading="lazy">
+            </div>
+            <div class="pinterest-item">
+                <img src="images/gents-6.webp" alt="Herren-Outfit 6" loading="lazy">
+            </div>
+        </div>
+
+        <p class="dresscode-note">Schuhtipp: Wählt etwas Bequemes zum Tanzen und für den Rasen.</p>
+    </div>
+</section>
+
+    <!-- Abschnitt 5: Details -->
+    <section id="org" style="background-color: rgba(216, 227, 216, 0.1);">
+        <div class="container">
+            <h2>Wichtiges</h2>
+
+            <div class="org-items">
+                <div class="org-item">
+                    <i class="fas fa-suitcase"></i>
+                    <h3>Was mitbringen?</h3>
+                    <p>Vergesst nicht Badekleidung und Toilettenartikel für den zweiten Tag! Außerdem empfehlen wir bequeme Schuhe zum Herumlaufen auf dem Grundstück.</p>
+                </div>
+
+                <div class="org-item">
+                    <i class="fas fa-car"></i>
+                    <h3>Parken</h3>
+                    <p>Auf dem Grundstück stehen Parkplätze zur Verfügung. Bitte gebt bei der Anmeldung an, ob ihr mit dem Auto kommt, damit wir genügend Plätze reservieren können.</p>
+                </div>
+
+                <div class="org-item">
+                    <i class="fa-solid fa-spa"></i>
+                    <h3>Blumen</h3>
+                    <p>Bitte keine Blumensträuße — wir haben keinen Platz, sie frisch zu halten. Wenn ihr etwas beitragen möchtet, freuen wir uns über eine Flasche Sekt oder Bier für die Feier.</p>
+                </div>
+
+                <div class="org-item">
+                    <i class="fa-solid fa-baby"></i>
+                    <h3>Kinder</h3>
+                    <p>Wir planen einen Abend für Erwachsene. Falls ihr keine Betreuung organisieren könnt, sind eure Kleinen natürlich auch willkommen — sagt uns einfach vorher Bescheid.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Abschnitt 6: Übernachtung -->
+    <section id="accommodation">
+        <div class="container">
+        <h2>Übernachtung</h2>
+
+        <div class="accommodation-info">
+            <p>Um nach der Party nicht auseinanderzugehen und den zweiten Tag miteinander zu verbringen, haben wir Übernachtungsmöglichkeiten auf dem Grundstück organisiert.</p>
+
+            <p style="margin-top: 20px;">Einige Gäste werden in Schlafzimmern mit Betten untergebracht (mit <strong>4-6 Personen</strong> pro Zimmer), für andere stellen wir <strong>Luftmatratzen</strong> in Gemeinschaftsbereichen auf.</p>
+
+            <p style="margin-top: 20px;">Damit wir die richtige Anzahl an Matratzen, Bettwäsche und Handtüchern besorgen, gebt bitte <strong>unbedingt</strong> im Gästefragebogen an, ob ihr übernachten möchtet.</p>    
+        </div>
+    </div>
+    </section>
+
+    <!-- Abschnitt 7: Anmeldeformular -->
+    <section id="form" style="background-color: rgba(216, 227, 216, 0.1);">
+        <div class="container">
+            <h2>Gästeanmeldung</h2>
+
+            <div class="form-container">
+                <form id="guest-form">
+                    <div class="form-group">
+                        <label for="name">Euer Name:*</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="guests-count">Wie viele seid ihr?*</label>
+                        <select id="guests-count" name="guests-count" required>
+                            <option value="" disabled selected>Anzahl auswählen</option>
+                            <option value="1">1 Gast</option>
+                            <option value="2">2 Gäste</option>
+                            <option value="3">3 Gäste</option>
+                            <option value="4+">4+ Gäste</option>
+                        </select>
+                    </div>
+
+                    <div id="additional-guests" style="display: none;">
+                        <!-- Zusätzliche Namensfelder werden per JS hinzugefügt -->
+                    </div>
+
+                    <div class="form-group">
+                        <label for="drinks">Getränkewünsche (für eure Gruppe, mehrere möglich)</label>
+                        <select id="drinks" name="drinks" multiple size="4">
+                            <option value="non-alc">🧃 Alkoholfrei</option>
+                            <option value="wine">🍺🍷🍹 Leichte Alkoholika</option>
+                            <option value="vodka">🥃 Starke Alkoholika</option>
+                            <option value="everything">🥴 Was eingeschenkt wird</option>
+                        </select>
+                        <p class="form-hint">Halte Strg (Windows) oder Cmd (Mac) gedrückt, um mehrere auszuwählen</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stay">Bleibt ihr für den zweiten Tag?*</label>
+                        <select id="stay" name="stay" required>
+                            <option value="" disabled selected>Option wählen</option>
+                            <option value="Остаюсь">Übernachtung geplant</option>
+                            <option value="Ночую дома, но приеду на следующий день">Übernachte zuhause, komme aber am nächsten Tag</option>
+                            <option value="Приеду только на 1й день">Nur am ersten Tag dabei</option>
+                            <option value="Решу позже">Entscheide später wegen Übernachtung</option>
+                            <option value="Не смогу посетить мероприятие">Kann nicht teilnehmen</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="car">Kommt ihr mit dem Auto?</label>
+                        <select id="car" name="car">
+                            <option value="" selected>Option wählen</option>
+                            <option value="Да">Ja, alle in einem Auto</option>
+                            <option value="Да">Ja, mit zwei Autos</option>
+                            <option value="Нет">Nein</option>
+                            <option value="Нет">Entscheide später</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="track">Welcher Song bringt euch garantiert auf die Tanzfläche?</label>
+                        <input type="text" id="track" name="track">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Telefonnummer:*</label>
+                        <input type="tel" id="phone" name="phone" pattern="\+7[ \-]?\d{3}[ \-]?\d{3}[ \-]?\d{2}[ \-]?\d{2}" placeholder="+7 999 123-45-67" required>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <button type="submit" class="btn">Ich komme!</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+<!-- Abschnitt 8: Anfahrt -->
+<section id="map-section">
+    <div class="container">
+        <h2>Anfahrt</h2>
+
+        <div class="map-unified-container">
+            <!-- Blöcke links neben der Karte -->
+            <div class="map-text-content">
+                <div class="map-contact-block">
+                    <h3>Falls ihr euch verfahrt</h3>
+                    <p>Ruft an oder schreibt uns</p>
+                    <div class="telegram-links">
+                        <a href="tel:+79211050841" class="telegram-link" target="_blank" title="Telefon des Bräutigams">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                        <p>Andre</p>
+                        <a href="tel:+79097874665" class="telegram-link" target="_blank" title="Telefon der Braut">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                        <p>Katja</p>
+                    </div>
+                </div>
+
+                <div class="map-contact-block">
+                    <h3>Gästechat</h3>
+                    <p>Der Chat-Link wird näher am Termin hinzugefügt</p>
+                    <a href="https://t.me/andrey_wedding" class="telegram-link" target="_blank" title="Telegram des Bräutigams">
+                        <i class="fab fa-telegram-plane"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Karte rechts -->
+            <div class="map-visual">
+                <div class="yandex-map-wrapper" id="map">
+                    <iframe 
+                        src="https://yandex.com/map-widget/v1/?display-text=%D1%81%D0%BE%D1%81%D0%BD%D1%8B%20%D0%B5%D0%BB%D0%B8%20%D0%B8%20%D0%B7%D0%B0%D0%BB%D0%B8%D0%B2&ll=20.204691%2C54.605408&mode=search&oid=5713895150&ol=biz&z=16" 
+                        frameborder="0" 
+                        allowfullscreen="true"
+                        title="Karte des Gästehauses 'Kiefern, Tannen & Bucht'"
+                        loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    <!-- Abschnitt 9: Countdown mit dunklem Hintergrund -->
+    <section class="countdown">
+        <div class="container">
+            <h2>Wir sehen uns in</h2>
+
+            <div class="timer">
+                <div class="timer-item">
+                    <div class="timer-value" id="days">000</div>
+                    <div class="timer-label">Tagen</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="hours">00</div>
+                    <div class="timer-label">Stunden</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="minutes">00</div>
+                    <div class="timer-label">Minuten</div>
+                </div>
+                <div class="timer-item">
+                    <div class="timer-value" id="seconds">00</div>
+                    <div class="timer-label">Sekunden</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Abschnitt 10: Memory-Spiel -->
+<section class="game-section">
+    <div class="container">
+        <h2>In der Zwischenzeit könnt ihr ein Spiel spielen!</h2>
+
+        <div style="text-align: center; margin-bottom: 40px;">
+            <button class="btn toggle-game" id="toggle-game-btn">Memory spielen</button>
+        </div>
+    
+        <div class="game-container" id="game-container" style="display: none;">
+            <div class="game-header">
+                <div>Züge: <span id="moves">0</span></div>
+                <div>Zeit: <span id="game-timer">0</span> Sek</div>
+                <div>Paare gefunden: <span id="pairs">0</span>/15</div>
+            </div>
+    
+            <div class="memory-grid" id="memory-grid">
+                <!-- Spielfeld wird per JS gefüllt -->
+            </div>
+    
+            <div style="text-align: center;">
+                <button class="btn" id="restart-game">Von vorn beginnen</button>
+            </div>
+            
+            <!-- Bestenliste hinzufügen -->
+            <div class="leaderboard-container" id="leaderboard-container" style="display: none; margin-top: 40px;">
+                <h3>Bestenliste</h3>
+                <div class="leaderboard" id="leaderboard">
+                    <!-- Tabelle wird per JS gefüllt -->
+                </div>
+                <div class="save-result-form" id="save-result-form" style="display: none; margin-top: 20px;">
+                    <h4>Ergebnis speichern</h4>
+                    <div class="form-group">
+                        <label for="player-name">Euer Name:</label>
+                        <input type="text" id="player-name" placeholder="Namen eingeben" maxlength="20">
+                    </div>
+                    <button class="btn save-result-btn" id="save-result-btn">Speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+   <!-- Footer -->
+<footer>
+    <div class="container">
+        <h2>Wir freuen uns auf euch!</h2>
+        <div style="margin-top: 10px; text-align: center;">
+            <p style="font-size: 1.8rem; margin-bottom: 8px; font-family: 'Great Vibes', cursive;">Katja & Andre</p>
+            <i class="fas fa-heart" style="color: var(--accent-color); font-size: 1.5rem;"></i>
+          <div class="language-switcher">
+    <a href="/" class="lang-btn">RU</a>
+    <a href="/de/" class="lang-btn">DE</a>
+</div>
+        </div>
+    </div>
+</footer>
+
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="/script.js"></script>
+</body>
+</html>
