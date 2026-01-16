@@ -1153,30 +1153,42 @@ select[multiple] option:checked {
     border: none;
 }
 
+.google-map-wrapper {
+    position: relative;
+    width: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
 .map-caption {
     position: absolute;
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.95);
     padding: 12px 24px;
     border-radius: 8px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     text-align: center;
     max-width: 90%;
     border: 2px solid var(--primary-green);
+    z-index: 1000; /* Важно! */
+    pointer-events: none; /* Чтобы клики проходили сквозь на карту */
 }
 
 .map-caption h4 {
     margin: 0 0 5px 0;
     color: var(--primary-green);
     font-size: 1.2rem;
+    pointer-events: none;
 }
 
 .map-caption p {
     margin: 0;
     color: #666;
     font-size: 0.9rem;
+    pointer-events: none;
 }
 
 @media (max-width: 992px) {
