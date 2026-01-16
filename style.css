@@ -1452,6 +1452,25 @@ footer .fas.fa-heart {
     }
 }
 
+/* альтернативный переключатель */
+.language-footer {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.language-footer a {
+    color: var(--primary-green);
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+.language-footer a:hover {
+    opacity: 1;
+    text-decoration: underline;
+}
+
 /* Адаптивность для мобильных */
 @media (max-width: 768px) {
     .game-section {
