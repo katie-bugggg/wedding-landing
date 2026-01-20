@@ -245,7 +245,7 @@ function showCelebrationMessage() {
 
 function updateCountdown() {
     try {
-        const targetDate = new Date('January 20, 2026 17:00:00 GMT+0300').getTime();
+        const targetDate = new Date('January 20, 2026 17:03:00 GMT+0300').getTime();
         const now = new Date().getTime();
         const timeLeft = targetDate - now;
 
@@ -259,6 +259,9 @@ function updateCountdown() {
             if (hoursEl) hoursEl.textContent = '00';
             if (minutesEl) minutesEl.textContent = '00';
             if (secondsEl) secondsEl.textContent = '00';
+            
+            // ВАЖНО: вызываем функцию праздника!
+            showCelebrationMessage();
             return;
         }
 
@@ -280,6 +283,10 @@ function updateCountdown() {
         console.error('Ошибка в updateCountdown:', error);
     }
 }
+
+// ЗАПУСК ТАЙМЕРА (ЭТО ВАЖНО!)
+updateCountdown();
+countdownInterval = setInterval(updateCountdown, 1000);
 
 // ========== ПОКАЗ СООБЩЕНИЙ ФОРМЫ ==========
 function showFormMessage(message, type = 'info') {
