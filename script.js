@@ -158,77 +158,86 @@ let gameActive = false;
 const LEADERBOARD_KEY = 'wedding_memory_leaderboard';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ3ILeDMXLKQScdGuW8wpzJfHrfqr55lTjXN9Q9qz78Tf64dnqtDaUTyH2FGDxsHIZ/exec';
 
-// ========== ФУНКЦИЯ ДЛЯ ОТОБРАЖЕНИЯ СООБЩЕНИЯ ПО ЗАВЕРШЕНИИ ОБРАТНОГО ОТСЧЕТА ==========
+// ========== ФУНКЦИЯ ДЛЯ ОТОБРАЖЕНИЯ СООБЩЕНИЯ ПО ЗАВЕРШЕНИЮ ОБРАТНОГО ОТСЧЕТА ==========
 function showCelebrationMessage() {
     try {
         // Находим контейнер таймера
-        const countdownContainer = document.querySelector('.countdown-timer-container');
+        const timerContainer = document.querySelector('.timer');
         
-        // Если нашли контейнер
-        if (countdownContainer) {
+        // Находим родительский контейнер для правильного позиционирования
+        const sectionContainer = document.querySelector('.countdown .container');
+        
+        if (timerContainer && sectionContainer) {
             // Создаем сообщение
             const message = document.createElement('div');
             message.className = 'celebration-message';
-            message.innerHTML = '<h2>Время праздновать!</h2>';
+            message.innerHTML = '<h3 style="margin: 0; padding: 20px 0;">Время праздновать!</h3>';
+            
+            // Добавляем стили для сообщения
             message.style.cssText = `
                 text-align: center;
-                padding: 40px 20px;
-                font-size: 2.5rem;
-                font-weight: bold;
-                color: #ff6b6b;
-                animation: pulse 1.5s infinite;
-                background: linear-gradient(45deg, #ffd166, #ff6b6b);
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                background-clip: text;
+                padding: 20px 0;
+                margin-top: 30px;
+                width: 100%;
+                animation: fadeIn 1s ease-in-out;
+                color: white !important;
             `;
             
-            // Добавляем стили для анимации
+            // Создаем элемент стилей
             const style = document.createElement('style');
             style.textContent = `
-                @keyframes pulse {
-                    0% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                    100% { transform: scale(1); }
+                @keyframes fadeIn {
+                    from { 
+                        opacity: 0; 
+                        transform: translateY(20px); 
+                    }
+                    to { 
+                        opacity: 1; 
+                        transform: translateY(0); 
+                    }
                 }
                 
-                .celebration-message h2 {
-                    margin: 0;
-                    font-size: 3rem;
-                    text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+                .celebration-message h3 {
+                    color: white !important;
+                    font-size: 2rem !important;
+                    font-weight: 400 !important;
+                    font-family: inherit !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                }
+                
+                /* Отключаем градиентный текст если есть */
+                .celebration-message h3 {
+                    background: none !important;
+                    -webkit-background-clip: unset !important;
+                    -webkit-text-fill-color: white !important;
+                    background-clip: unset !important;
+                    text-shadow: none !important;
                 }
             `;
             
             // Вставляем стили в head
             document.head.appendChild(style);
             
-            // Заменяем содержимое контейнера
-            countdownContainer.innerHTML = '';
-            countdownContainer.appendChild(message);
+            // Вставляем сообщение ПОСЛЕ таймера внутри контейнера
+            sectionContainer.appendChild(message);
             
-            // Альтернативный вариант: просто скрыть таймер и показать сообщение
-            // countdownContainer.style.display = 'none';
-            // document.getElementById('celebration-message').style.display = 'block';
         } else {
-            // Если контейнер не найден, создаем сообщение в body
-            const message = document.createElement('div');
-            message.id = 'celebration-message';
-            message.innerHTML = '<h2>Время праздновать!</h2>';
-            message.style.cssText = `
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                font-size: 3rem;
-                font-weight: bold;
-                color: #ff6b6b;
-                text-align: center;
-                z-index: 1000;
-                animation: pulse 1.5s infinite;
-            `;
-            
-            // Добавляем на страницу
-            document.body.appendChild(message);
+            // Если не нашли элементы, ищем контейнер заголовка
+            const countdownSection = document.querySelector('.countdown');
+            if (countdownSection) {
+                const message = document.createElement('div');
+                message.className = 'celebration-message';
+                message.innerHTML = '<h3>Время праздновать!</h3>';
+                message.style.cssText = `
+                    text-align: center;
+                    padding: 30px 0;
+                    color: white;
+                    font-size: 2rem;
+                    font-weight: normal;
+                `;
+                countdownSection.appendChild(message);
+            }
         }
         
         // Очищаем интервал
@@ -245,7 +254,7 @@ function showCelebrationMessage() {
 
 function updateCountdown() {
     try {
-        const targetDate = new Date('January 20, 2026 17:03:00 GMT+0300').getTime();
+        const targetDate = new Date('January 20, 2026 17:23:00 GMT+0300').getTime();
         const now = new Date().getTime();
         const timeLeft = targetDate - now;
 
