@@ -141,7 +141,6 @@ let additionalGuestsContainer = null;
 
 // Таймер обратного отсчета
 let countdownInterval = null;
-let celebrationShown = false; // Флаг для предотвращения повторного показа
 
 // Переменные для игры Memory
 let gameStarted = false;
@@ -159,59 +158,11 @@ let gameActive = false;
 const LEADERBOARD_KEY = 'wedding_memory_leaderboard';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ3ILeDMXLKQScdGuW8wpzJfHrfqr55lTjXN9Q9qz78Tf64dnqtDaUTyH2FGDxsHIZ/exec';
 
-// ========== ФУНКЦИЯ ДЛЯ ОТОБРАЖЕНИЯ СООБЩЕНИЯ ПО ЗАВЕРШЕНИЮ ОБРАТНОГО ОТСЧЕТА ==========
-function showCelebrationMessage() {
-    // Защита от повторного вызова
-    if (celebrationShown) return;
-    celebrationShown = true;
-    
-    try {
-        const timerContainer = document.querySelector('.timer');
-        const sectionContainer = document.querySelector('.countdown .container');
-        
-        if (timerContainer && sectionContainer) {
-            const message = document.createElement('div');
-            message.className = 'celebration-message';
-            message.innerHTML = '<h3>Время праздновать!</h3>';
-            
-            message.style.cssText = `
-                text-align: center;
-                padding: 30px 0;
-                margin-top: 20px;
-                width: 100%;
-                animation: fadeIn 1s ease-in-out;
-                color: white;
-                font-size: 1.8rem;
-                font-weight: normal;
-            `;
-            
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(20px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-            `;
-            
-            document.head.appendChild(style);
-            sectionContainer.appendChild(message);
-        }
-        
-        // Гарантированно останавливаем таймер
-        if (countdownInterval) {
-            clearInterval(countdownInterval);
-            countdownInterval = null;
-        }
-    } catch (error) {
-        console.error('Ошибка:', error);
-    }
-}
-
-// ========== ОБРАТНЫЙ ОТСЧЕТ ==========
+// ========== ОБРАТНЫЙ ОТСЧЕТ (ИСПРАВЛЕННЫЙ) ==========
 
 function updateCountdown() {
     try {
-        const targetDate = new Date('January 20, 2026 17:30:00 GMT+0300').getTime();
+        const targetDate = new Date('June 13, 2026 16:00:00 GMT+0300').getTime();
         const now = new Date().getTime();
         const timeLeft = targetDate - now;
 
@@ -225,9 +176,6 @@ function updateCountdown() {
             if (hoursEl) hoursEl.textContent = '00';
             if (minutesEl) minutesEl.textContent = '00';
             if (secondsEl) secondsEl.textContent = '00';
-            
-            // ВАЖНО: вызываем функцию праздника!
-            showCelebrationMessage();
             return;
         }
 
@@ -249,10 +197,6 @@ function updateCountdown() {
         console.error('Ошибка в updateCountdown:', error);
     }
 }
-
-// ЗАПУСК ТАЙМЕРА (ЭТО ВАЖНО!)
-updateCountdown();
-countdownInterval = setInterval(updateCountdown, 1000);
 
 // ========== ПОКАЗ СООБЩЕНИЙ ФОРМЫ ==========
 function showFormMessage(message, type = 'info') {
