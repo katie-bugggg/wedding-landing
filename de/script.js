@@ -140,7 +140,13 @@ let guestsCountSelect = null;
 let additionalGuestsContainer = null;
 
 // Таймер обратного отсчета
+const TARGET_DATE = new Date('June 13, 2026 16:00:00 GMT+0200').getTime();
+const COUNTDOWN_TITLE = document.getElementById('countdown-title');
 let countdownInterval = null;
+// Флаг для отслеживания режима (true = идет обратный отсчет, false = идет отсчет праздника)
+let isCountdownMode = true;
+// Интервал для постоянного салюта
+let fireworksInterval = null;
 
 // Переменные для игры Memory
 let gameStarted = false;
