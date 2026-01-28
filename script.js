@@ -672,8 +672,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // === КОНЕЦ БЛОКА ГАМБУРГЕР МЕНЮ ===
     
     // 1. Запускаем обратный отсчет сразу
-    updateCountdown();
-    countdownInterval = setInterval(updateCountdown, 1000);
+    updateTimer();
+    countdownInterval = setInterval(updateTimer, 1000);
     
     // 2. Инициализируем форму ответов (ДОБАВЬТЕ ЭТУ СТРОКУ!)
     initResponseForm();
