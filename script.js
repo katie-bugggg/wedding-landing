@@ -140,7 +140,13 @@ let guestsCountSelect = null;
 let additionalGuestsContainer = null;
 
 // Таймер обратного отсчета
+const TARGET_DATE = new Date('June 13, 2026 16:00:00 GMT+0200').getTime();
+const COUNTDOWN_TITLE = document.getElementById('countdown-title');
 let countdownInterval = null;
+// Флаг для отслеживания режима (true = идет обратный отсчет, false = идет отсчет праздника)
+let isCountdownMode = true;
+// Интервал для постоянного салюта
+let fireworksInterval = null;
 
 // Переменные для игры Memory
 let gameStarted = false;
@@ -158,45 +164,186 @@ let gameActive = false;
 const LEADERBOARD_KEY = 'wedding_memory_leaderboard';
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxQ3ILeDMXLKQScdGuW8wpzJfHrfqr55lTjXN9Q9qz78Tf64dnqtDaUTyH2FGDxsHIZ/exec';
 
-// ========== ОБРАТНЫЙ ОТСЧЕТ (ИСПРАВЛЕННЫЙ) ==========
+// ========== ОБРАТНЫЙ ОТСЧЕТ ==========
+// ========== ГЛАВНАЯ ФУНКЦИЯ ОБНОВЛЕНИЯ ==========
 
-function updateCountdown() {
+function updateTimer() {
     try {
-        const targetDate = new Date('June 13, 2026 16:00:00 GMT+0300').getTime();
-        const now = new Date().getTime();
-        const timeLeft = targetDate - now;
-
-        if (timeLeft < 0) {
-            const daysEl = document.getElementById('days');
-            const hoursEl = document.getElementById('hours');
-            const minutesEl = document.getElementById('minutes');
-            const secondsEl = document.getElementById('seconds');
-            
-            if (daysEl) daysEl.textContent = '000';
-            if (hoursEl) hoursEl.textContent = '00';
-            if (minutesEl) minutesEl.textContent = '00';
-            if (secondsEl) secondsEl.textContent = '00';
-            return;
-        }
-
-        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-
-        const daysEl = document.getElementById('days');
-        const hoursEl = document.getElementById('hours');
-        const minutesEl = document.getElementById('minutes');
-        const secondsEl = document.getElementById('seconds');
+        const now = Date.now(); // Используем Date.now() для большей точности
+        lastUpdateTime = now;
         
-        if (daysEl) daysEl.textContent = days.toString().padStart(3, '0');
-        if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
-        if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
-        if (secondsEl) secondsEl.textContent = seconds.toString().padStart(2, '0');
+        // Если дата в будущем И мы еще в режиме обратного отсчета
+        if (isCountdownMode && now < TARGET_DATE) {
+            // РЕЖИМ ОБРАТНОГО ОТСЧЕТА
+            const timeLeft = TARGET_DATE - now;
+            
+            // Обновление обратного отсчета
+            const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days.toString().padStart(3, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+        } 
+        // Если настало или прошло время ТАРГЕТ_ДАТЫ
+        else if (isCountdownMode) {
+            // ПЕРЕКЛЮЧЕНИЕ В РЕЖИМ ПРАЗДНИКА
+            isCountdownMode = false;
+            switchToPartyMode();
+            updatePartyTimer(); // Немедленно обновить таймер праздника
+        }
+        else {
+            // РЕЖИМ ОТСЧЕТА ПРАЗДНИКА
+            updatePartyTimer();
+        }
     } catch (error) {
-        console.error('Ошибка в updateCountdown:', error);
+        console.error('Ошибка в updateTimer:', error);
     }
 }
+
+// ========== ПЕРЕКЛЮЧЕНИЕ В РЕЖИМ ПРАЗДНИКА ==========
+
+function switchToPartyMode() {
+    console.log('Переключение в режим праздника! Время:', new Date().toLocaleTimeString());
+    
+    // Изменение заголовка
+    COUNTDOWN_TITLE.textContent = 'Мы празднуем уже:';
+    
+    // Установка начальных значений (должны быть все нули)
+    document.getElementById('days').textContent = '000';
+    document.getElementById('hours').textContent = '00';
+    document.getElementById('minutes').textContent = '00';
+    document.getElementById('seconds').textContent = '00';
+    
+    // Запуск постоянного салюта
+    startContinuousFireworks();
+}
+
+// ========== ОТСЧЕТ ВРЕМЕНИ ПРАЗДНИКА ==========
+
+function updatePartyTimer() {
+    const now = Date.now();
+    const partyDuration = now - TARGET_DATE; // Сколько длится праздник в миллисекундах
+    
+    // Защита от отрицательного времени (на всякий случай)
+    if (partyDuration < 0) {
+        console.warn('Время праздника отрицательное! Проверьте TARGET_DATE');
+        return;
+    }
+    
+    // Рассчет дней, часов, минут, секунд праздника
+    const days = Math.floor(partyDuration / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((partyDuration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((partyDuration % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((partyDuration % (1000 * 60)) / 1000);
+    
+    // Обновление элементов
+    document.getElementById('days').textContent = days.toString().padStart(3, '0');
+    document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+    document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+    document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+    
+    // Для дебага - выводим в консоль
+    if (partyDuration < 5000) { // Только первые 5 секунд
+        console.log(`Праздник длится: ${days}д ${hours}ч ${minutes}м ${seconds}с (${partyDuration}мс)`);
+    }
+}
+
+// ========== ПОСТОЯННЫЙ САЛЮТ ==========
+
+function startContinuousFireworks() {
+    console.log('Запуск салюта!');
+    
+    // Остановить предыдущий интервал, если он был
+    if (fireworksInterval) {
+        clearInterval(fireworksInterval);
+    }
+    
+    // Запускать салют каждые 2 секунды
+    fireworksInterval = setInterval(() => {
+        createFireworksBurst();
+    }, 2000);
+    
+    // Сразу запустить первый салют
+    createFireworksBurst();
+}
+
+function createFireworksBurst() {
+    const countdownSection = document.querySelector('.countdown');
+    if (!countdownSection) return;
+    
+    // Создаем несколько "вспышек" салюта в одном залпе
+    for (let i = 0; i < 8; i++) {
+        setTimeout(() => {
+            const firework = document.createElement('div');
+            firework.style.cssText = `
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: ${getRandomColor()};
+                border-radius: 50%;
+                top: ${20 + Math.random() * 60}%;
+                left: ${Math.random() * 100}%;
+                pointer-events: none;
+                z-index: 1;
+                animation: explode 1.5s ease-out forwards;
+            `;
+            countdownSection.appendChild(firework);
+            
+            // Удаляем элемент после анимации
+            setTimeout(() => {
+                if (firework.parentNode) {
+                    firework.parentNode.removeChild(firework);
+                }
+            }, 1500);
+        }, i * 100);
+    }
+}
+
+function getRandomColor() {
+    const colors = ['#ff9a9e', '#fad0c4', '#a1c4fd', '#c2e9fb', '#ffecd2', '#fcb69f', '#ff9a9e', '#fad0c4', '#a1c4fd'];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+
+// ========== ИНИЦИАЛИЗАЦИЯ ==========
+
+// Запуск таймера при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Загрузка страницы. Текущее время:', new Date().toLocaleTimeString());
+    console.log('Целевое время:', new Date(TARGET_DATE).toLocaleTimeString());
+    console.log('Разница (мс):', TARGET_DATE - Date.now());
+    
+    // Проверить сразу, не настало ли уже время праздника
+    const now = Date.now();
+    if (now >= TARGET_DATE) {
+        console.log('Праздник уже начался!');
+        isCountdownMode = false;
+        switchToPartyMode();
+    } else {
+        console.log('Обратный отсчет активен');
+    }
+    
+    // Запуск интервала обновления (каждую секунду)
+    countdownInterval = setInterval(updateTimer, 1000);
+    
+    // Первоначальное обновление
+    updateTimer();
+});
+
+// Остановка интервала при уходе со страницы
+window.addEventListener('beforeunload', function() {
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+    }
+    if (fireworksInterval) {
+        clearInterval(fireworksInterval);
+    }
+});
+
+
 
 // ========== ПОКАЗ СООБЩЕНИЙ ФОРМЫ ==========
 function showFormMessage(message, type = 'info') {
