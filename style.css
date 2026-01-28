@@ -1201,6 +1201,7 @@ select[multiple] option:checked {
     background-color: var(--dark-green);
     width: 100%;
     overflow: hidden;
+    position: relative; /* Добавлено для позиционирования эффектов */
 }
 
 .countdown h2 {
@@ -1209,18 +1210,23 @@ select[multiple] option:checked {
     font-family: 'Great Vibes', cursive;
     font-size: 3rem;
     padding: 0 10px;
+    position: relative;
+    z-index: 2; /* Чтобы текст был поверх эффектов */
 }
 
 .countdown h2:after {
     background-color: var(--accent-color);
 }
 
+/* Стили для режима праздника */
 .timer {
     display: flex;
     justify-content: center;
     gap: 10px;
     flex-wrap: wrap;
     padding: 0 10px;
+    position: relative;
+    z-index: 2; /* Чтобы таймер был поверх эффектов */
 }
 
 .timer-item {
@@ -1232,24 +1238,27 @@ select[multiple] option:checked {
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.timer-value {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1;
-    font-family: 'Montserrat', sans-serif;
-}
-
-.timer-label {
-    font-size: 0.8rem;
-    opacity: 0.9;
-    margin-top: 5px;
+/* Анимация салюта */
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(3);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
 }
 
 /* ДЕСКТОП - только для экранов ШИРЕ 768px */
 @media (min-width: 769px) {
     .timer {
         gap: 20px;
-        flex-wrap: nowrap; /* Важно: запрещаем перенос на десктопе */
+        flex-wrap: nowrap;
         max-width: 900px;
         margin: 0 auto;
     }
@@ -1257,7 +1266,7 @@ select[multiple] option:checked {
     .timer-item {
         min-width: 100px;
         padding: 25px 15px;
-        flex: 1; /* Равномерно распределяем ширину */
+        flex: 1;
     }
     
     .timer-value {
