@@ -452,82 +452,155 @@
 
     <!-- Блок 7: Форма подтверждения участия -->
     <section id="form" style="background-color: rgba(216, 227, 216, 0.1);">
-        <div class="container">
-            <h2>Анкета гостя</h2>
+    <div class="container">
+        <h2>Анкета гостя</h2>
 
-            <div class="form-container">
-                <form id="guest-form">
-                    <div class="form-group">
-                        <label for="name">Вас зовут:*</label>
-                        <input type="text" id="name" name="name" required>
+        <!-- Уведомление о предыдущем заполнении -->
+        <div id="previous-fill-message" class="timeline-note" style="display: none;">
+            <p><strong>Мы видим, что вы уже заполняли анкету!</strong></p>
+            <p>Для обновления данных перейдите по ссылке: <a href="#" id="edit-existing-link" class="notice-link"></a></p>
+        </div>
+        
+        <div class="form-container">
+            <form id="guest-form">
+                
+                <!-- Радиокнопки "Заполняю за" -->
+                <div class="form-group">
+                    <div class="radio-group">
+                        <label class="radio-label">Заполняю за:</label>
+                        <div class="radio-options">
+                            <label class="radio-option">
+                                <input type="radio" name="for-who" value="myself" checked>
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">Себя</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="for-who" value="family">
+                                <span class="radio-custom"></span>
+                                <span class="radio-text">Семью/компанию</span>
+                            </label>
+                        </div>
                     </div>
+                </div>
+                
+                <!-- Предупреждение для семьи -->
+                <div id="family-warning" class="form-warning accent" style="display: none;">
+                    <p>Убедитесь, что ваши спутники не заполняют форму отдельно — тогда мы точно всех учтём и ничего не перепутаем!</p>
+                </div>
 
+                <!-- Имя -->
+                <div class="form-group">
+                    <label for="name" id="name-label">Вас зовут:*</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+
+                <!-- Поле для имен гостей (для семьи) -->
+                <div id="guests-names-container" style="display: none;">
                     <div class="form-group">
-                        <label for="guests-count">Каким составом нагрянете?*</label>
-                        <select id="guests-count" name="guests-count" required>
-                            <option value="" disabled selected>Выберите количество</option>
-                            <option value="1">1 гость</option>
-                            <option value="2">2 гостя</option>
-                            <option value="3">3 гостя</option>
-                            <option value="4+">4+ гостей</option>
+                        <label for="guests-names">Перечислите имена всех спутников*</label>
+                        <textarea id="guests-names" name="guests-names" placeholder="Гость 2, Гость 3, Гость 4..." rows="2"></textarea>
+                    </div>
+                </div>
+
+                <!-- Напитки -->
+                <div class="form-group">
+                    <label id="drinks-label" for="drinks">Что будете пить?*</label>
+                    <div id="drinks-single-container">
+                        <select id="drinks-single" name="drinks-single" required>
+                            <option value="" disabled selected>Выберите вариант</option>
+                            <option value="non-alc">🧃 Безалкогольное</option>
+                            <option value="wine">🍺🍷🍹 Лёгкое алкогольное</option>
+                            <option value="vodka">🥃 Крепкое алкогольное</option>
+                            <option value="everything">🥴 Всё, что нальют</option>
+                            <option value="Позже">Решу позже</option>
                         </select>
                     </div>
-
-                    <div id="additional-guests" style="display: none;">
-                        <!-- Дополнительные поля для имен гостей будут добавлены через JS -->
-                    </div>
-
-                    <div class="form-group">
-                        <label for="drinks">Что будете пить? (при заполнении за нескольких гостей можно выбрать несколько вариантов)</label>
-                        <select id="drinks" name="drinks" multiple size="4">
+                    <div id="drinks-multiple-container" style="display: none;">
+                        <select id="drinks-multiple" name="drinks-multiple" multiple size="4">
                             <option value="non-alc">🧃 Безалкогольное</option>
-                            <option value="wine">🍺🍷🍹 Лёкгое алкогольное</option>
+                            <option value="wine">🍺🍷🍹 Лёгкое алкогольное</option>
                             <option value="vodka">🥃 Крепкое алкогольное</option>
-                            <option value="everything">🥴 Все, что нальют</option>
+                            <option value="everything">🥴 Всё, что нальют</option>
+                            <option value="Позже">Решим позже</option>
                         </select>
                         <p class="form-hint">Для выбора нескольких вариантов удерживайте Ctrl (Windows) или Cmd (Mac)</p>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label for="stay">Остаетесь на второй день?*</label>
-                        <select id="stay" name="stay" required>
-                            <option value="" disabled selected>Выберите вариант</option>
-                            <option value="Остаюсь">Остаюсь</option>
-                            <option value="Ночую дома, но приеду на следующий день">Ночую дома, но приеду на следующий день</option>
-                            <option value="Приеду только на 1й день">Приеду только на 1й день</option>
-                            <option value="Не смогу посетить мероприятие">Решу позже насчет ночёвки</option>
-                            <option value="Не смогу посетить мероприятие">Не смогу посетить мероприятие</option>
-                        </select>
-                    </div>
+                <!-- Ночевка -->
+                <div class="form-group">
+                    <label id="stay-label" for="stay">Остаётесь на второй день?*</label>
+                    <select id="stay" name="stay" required>
+                        <option value="" disabled selected>Выберите вариант</option>
+                        <option value="Остаюсь">Остаюсь</option>
+                        <option value="Ночую дома, но приеду на следующий день">Ночую дома, но приеду на следующий день</option>
+                        <option value="Приеду только на 1й день">Приеду только на первый день</option>
+                        <option value="Позже">Решу позже насчёт ночёвки</option>
+                        <option value="Не смогу посетить мероприятие">Не смогу посетить мероприятие</option>
+                        <option value="Свой вариант">Свой вариант (распишу в комментарии)</option>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label for="car">Приедете на своем авто?</label>
-                        <select id="car" name="car">
-                            <option value="" selected>Выберите вариант</option>
-                            <option value="Да">Да, все на одном</option>
-                            <option value="Да">Да, на двух</option>
-                            <option value="Нет">Нет</option>
-                            <option value="Нет">Решу позже</option>
-                        </select>
-                    </div>
+                <!-- Авто -->
+                <div class="form-group">
+                    <label id="car-label" for="car">Приедете на своём авто?</label>
+                    <select id="car" name="car">
+                        <option value="" selected>Выберите вариант</option>
+                        <option value="Да">Да</option>
+                        <option value="Нет">Нет</option>
+                        <option value="Позже">Решу позже</option>
+                        <option value="Свой вариант">Свой вариант (распишу в комментарии)</option>
+                    </select>
+                </div>
 
-                    <div class="form-group">
-                        <label for="track">Под какой трек вы точно подорвётесь на танцпол?</label>
-                        <input type="text" id="track" name="track">
-                    </div>
+                <!-- Трек -->
+                <div class="form-group">
+                    <label for="track">Под какой трек вы точно подорвётесь на танцпол?</label>
+                    <input type="text" id="track" name="track" placeholder="Введите название песни и исполнителя">
+                </div>
 
-                    <div class="form-group">
-                        <label for="phone">Контактный телефон:*</label>
-                        <input type="tel" id="phone" name="phone" pattern="(\+7[ \-]?\d{3}[ \-]?\d{3}[ \-]?\d{2}[ \-]?\d{2})|(\+49[ \-]?\d{3}[ \-]?\d{4,8})" placeholder="+7 999 123-45-67" required>
-                    </div>
+                <!-- Телефон -->
+                <div class="form-group">
+                    <label for="phone">Контактный телефон:*</label>
+                    <input type="tel" id="phone" name="phone" pattern="(\+7[ \-]?\d{3}[ \-]?\d{3}[ \-]?\d{2}[ \-]?\d{2})|(\+49[ \-]?\d{3}[ \-]?\d{4,8})" placeholder="+7 999 123-45-67" required>
+                </div>
 
-                    <div style="text-align: center;">
-                        <button type="submit" class="btn">Я буду!</button>
-                    </div>
-                </form>
-            </div>
+                <!-- Комментарии -->
+                <div class="form-group">
+                    <label for="comments">Комментарии или уточнения</label>
+                    <textarea id="comments" name="comments" placeholder="Любые уточнения по ночёвке, авто, напиткам или другие вопросы..." rows="3"></textarea>
+                </div>
+
+                <!-- Скрытое поле для уникального кода -->
+                <input type="hidden" name="unique_code" id="unique-code">
+
+                <!-- Кнопка отправки -->
+                <div style="text-align: center;">
+                    <button type="submit" class="btn">Я буду!</button>
+                </div>
+
+                <!-- Ссылка для редактирования (будет показана после отправки) -->
+                <div id="edit-link-container" style="display: none; text-align: center; margin-top: 20px; padding: 15px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 4px solid #28a745;">
+                    <p style="color: #155724; margin: 0;">Если ваши планы поменяются, пожалуйста, сообщите нам!</p>
+                    <a href="#" id="edit-link-display" target="_blank" style="color: #4a6fa5; font-weight: bold; text-decoration: underline; word-break: break-all;">
+                        Редактировать ответ
+                    </a>
+                    <p class="form-hint" style="margin-top: 10px; font-size: 12px;">
+                        Сохраните эту ссылку или добавьте страницу в закладки
+                    </p>
+                </div>
+                
+                <!-- Сообщения после отправки -->
+                <div id="reminder-message" style="display: none; text-align: center; margin-top: 20px; padding: 15px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 4px solid #ffc107;">
+                    <p style="color: #856404; margin: 0;">
+                        <strong>Не забудьте сообщить нам о ваших планах, когда решите!</strong>
+                    </p>
+                </div>
+
+            </form>
         </div>
-    </section>
+    </div>
+</section>
 
 <!-- Блок 8: Как добраться -->
 <section id="map-section">
