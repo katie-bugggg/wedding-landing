@@ -775,7 +775,7 @@ function handleFormSuccess(formData) {
     localStorage.setItem('form_was_submitted', 'true');
 
     // ПОЛУЧАЕМ guestForm ПЕРЕД ИСПОЛЬЗОВАНИЕМ
-    const guestForm = document.getElementById('guest-form');
+    guestForm = document.getElementById('guest-form');
     if (!guestForm) {
         console.error('❌ Форма не найдена!');
         return;
