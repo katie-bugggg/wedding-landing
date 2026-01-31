@@ -154,7 +154,6 @@ let nameInput = null;
 let phoneInput = null;
 let staySelect = null;
 let guestsNamesTextarea = null;
-let guestForm = null;
 let editLinkContainer = null;
 let editLinkDisplay = null;
 let reminderMessage = null;
