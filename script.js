@@ -752,6 +752,17 @@ ${formData.comments ? `• Комментарии: ${formData.comments}` : ''}
 function handleFormSuccess(formData) {
     // Устанавливаем флаг отправки
     localStorage.setItem('form_was_submitted', 'true');
+
+    // ПОЛУЧАЕМ guestForm ПЕРЕД ИСПОЛЬЗОВАНИЕМ
+    const guestForm = document.getElementById('guest-form');
+    if (!guestForm) {
+        console.error('❌ Форма не найдена!');
+        return;
+    }
+    
+    // Получаем элемент сообщения
+    const finalMessage = document.getElementById('final-message');
+    const messageText = document.getElementById('message-text');
     
     if (finalMessage && messageText) {
         // Определяем текст в зависимости от наличия "Решу позже"
