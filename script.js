@@ -156,8 +156,8 @@ let staySelect = null;
 let guestsNamesTextarea = null;
 let editLinkContainer = null;
 let editLinkDisplay = null;
-let reminderMessage = null;
-let thanksMessage = null;
+let finalMessage = null;
+let messageText = null;
 let previousFillMessage = null;
 let editExistingLink = null;
 
@@ -542,10 +542,10 @@ function initResponseForm() {
     guestForm = document.getElementById('guest-form');
     editLinkContainer = document.getElementById('edit-link-container');
     editLinkDisplay = document.getElementById('edit-link-display');
-    reminderMessage = document.getElementById('reminder-message');
-    thanksMessage = document.getElementById('thanks-message');
     previousFillMessage = document.getElementById('previous-fill-message');
     editExistingLink = document.getElementById('edit-existing-link');
+    finalMessage = document.getElementById('final-message');
+messageText = document.getElementById('message-text');
     
     // Проверяем обязательные элементы
     if (!guestForm || !nameInput || !phoneInput) {
@@ -753,30 +753,34 @@ function handleFormSuccess(formData) {
     // Устанавливаем флаг отправки
     localStorage.setItem('form_was_submitted', 'true');
     
-    // Показываем ссылку для редактирования
-    if (editLinkContainer) {
-        editLinkContainer.style.display = 'block';
-        editLinkContainer.style.animation = 'fadeIn 0.5s';
-    }
-    
-    // Показываем соответствующее сообщение
-    if (formData.has_later && reminderMessage) {
-        reminderMessage.style.display = 'block';
-        if (thanksMessage) thanksMessage.style.display = 'none';
-        reminderMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    } else if (thanksMessage) {
-        reminderMessage.style.display = 'none';
-        thanksMessage.style.display = 'block';
-        thanksMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    if (finalMessage && messageText) {
+        // Определяем текст в зависимости от наличия "Решу позже"
+        if (formData.has_later) {
+            // Если есть "Решу позже" - меняем стиль и текст
+            finalMessage.style.background = 'rgba(255, 193, 7, 0.1)';
+            finalMessage.style.borderLeftColor = '#ffc107';
+            messageText.style.color = '#856404';
+            messageText.innerHTML = '<strong>Не забудьте сообщить нам о ваших планах, когда решите!</strong>';
+        } else {
+            // Если всё определили - стандартное сообщение
+            finalMessage.style.background = 'rgba(40, 167, 69, 0.1)';
+            finalMessage.style.borderLeftColor = '#28a745';
+            messageText.style.color = '#155724';
+            messageText.innerHTML = '<strong>Если ваши планы поменяются, пожалуйста, сообщите нам!</strong>';
+        }
+        
+        // Показываем сообщение
+        finalMessage.style.display = 'block';
+        
+        // Прокручиваем к сообщению
+        finalMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
     
     // Восстанавливаем кнопку
     const submitBtn = guestForm.querySelector('button[type="submit"]');
     if (submitBtn) {
-        setTimeout(() => {
-            submitBtn.textContent = 'Я буду!';
-            submitBtn.disabled = false;
-        }, 2000);
+        submitBtn.textContent = 'Я буду!';
+        submitBtn.disabled = false;
     }
 }
 
