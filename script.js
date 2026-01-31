@@ -592,6 +592,27 @@ messageText = document.getElementById('message-text');
 
 // ========== ОТПРАВКА ФОРМЫ ==========
 
+// Функция для показа сообщений об ошибках
+function showErrorMessage(message) {
+    console.error('❌ Ошибка:', message);
+    
+    // Если у тебя есть блок для сообщений - используй его
+    const finalMessage = document.getElementById('final-message');
+    const messageText = document.getElementById('message-text');
+    
+    if (finalMessage && messageText) {
+        finalMessage.style.background = 'rgba(255, 0, 0, 0.1)';
+        finalMessage.style.borderLeftColor = '#d32f2f';
+        messageText.style.color = '#d32f2f';
+        messageText.innerHTML = `<strong>${message}</strong>`;
+        finalMessage.style.display = 'block';
+        finalMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else {
+        // Fallback: простой alert
+        alert(message);
+    }
+}
+
 // Настройка обработчика отправки
 function setupFormSubmitHandler() {
     if (!guestForm) return;
