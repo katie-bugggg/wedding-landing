@@ -395,11 +395,12 @@ function updateUniqueCode() {
         
         // Обновляем ссылку для редактирования
         if (editLinkDisplay) {
-            const baseUrl = window.location.origin + window.location.pathname;
-            const editUrl = baseUrl.replace('index.html', 'edit.html') + '?code=' + encodeURIComponent(code);
-            editLinkDisplay.href = editUrl;
-            editLinkDisplay.textContent = 'Редактировать ответ: ' + editUrl;
-        }
+    const decodedCode = decodeURIComponent(encodeURIComponent(code));
+    const editUrl = `https://zhara-party.ru/edit.html?code=${decodedCode}`;
+    
+    editLinkDisplay.href = editUrl;
+    editLinkDisplay.textContent = editUrl; // Только URL, без префикса
+}
     }
 }
 
