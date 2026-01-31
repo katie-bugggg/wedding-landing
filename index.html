@@ -504,9 +504,9 @@
 
                 <!-- Напитки -->
                 <div class="form-group">
-                    <label id="drinks-label" for="drinks">Что будете пить?*</label>
+                    <label id="drinks-label">Что будете пить?*</label>
                     <div id="drinks-single-container">
-                        <select id="drinks-single" name="drinks-single" required>
+                        <select id="drinks-single" name="drinks-single" required aria-labelledby="drinks-label">
                             <option value="" disabled selected>Выберите вариант</option>
                             <option value="non-alc">🧃 Безалкогольное</option>
                             <option value="wine">🍺🍷🍹 Лёгкое алкогольное</option>
@@ -516,7 +516,7 @@
                         </select>
                     </div>
                     <div id="drinks-multiple-container" style="display: none;">
-                        <select id="drinks-multiple" name="drinks-multiple" multiple size="4">
+                        <select id="drinks-multiple" name="drinks-multiple" multiple size="4" aria-labelledby="drinks-label">
                             <option value="non-alc">🧃 Безалкогольное</option>
                             <option value="wine">🍺🍷🍹 Лёгкое алкогольное</option>
                             <option value="vodka">🥃 Крепкое алкогольное</option>
