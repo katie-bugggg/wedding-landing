@@ -1168,6 +1168,39 @@ select[multiple] option:checked {
     margin-bottom: 25px;
 }
 
+/* Стили для уведомления - такой же стиль как timeline-note */
+.form-notice {
+    font-style: italic;
+    color: #666;
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 25px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 5px;
+    border-left: 3px solid rgb(74, 108, 74);
+    animation: fadeIn 0.5s;
+}
+
+.form-notice p {
+    margin: 0 0 8px 0;
+}
+
+.form-notice p:last-child {
+    margin-bottom: 0;
+}
+
+.notice-link {
+    color: rgb(74, 108, 74);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px dashed rgb(74, 108, 74);
+}
+
+.notice-link:hover {
+    border-bottom: 1px solid rgb(74, 108, 74);
+}
+
 /* Анимации */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(-10px); }
