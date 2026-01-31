@@ -498,13 +498,6 @@ function initializeForm() {
         editExistingLink.href = editUrl;
         editExistingLink.textContent = 'Редактировать мои ответы';
         previousFillMessage.style.display = 'block';
-        
-        // Автоматически скрываем через 15 секунд
-        setTimeout(() => {
-            if (previousFillMessage.style.display === 'block') {
-                previousFillMessage.style.display = 'none';
-            }
-        }, 15000);
     }
     
     // Генерируем новый код, если его нет
