@@ -604,7 +604,7 @@ function setupFormSubmitHandler() {
     if (!guestForm) return;
     
     guestForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
+        e.preventDefault(); // ВАЖНО: предотвращаем стандартную отправку
         
         const submitBtn = this.querySelector('button[type="submit"]');
         const originalText = submitBtn.textContent;
@@ -617,16 +617,7 @@ function setupFormSubmitHandler() {
             
             // Проверка обязательных полей
             if (!validateFormData(formData)) {
-                // Показываем ошибку в уже существующих блоках
-                if (thanksMessage && reminderMessage) {
-                    thanksMessage.innerHTML = '<p style="color: #d32f2f; margin: 0;"><strong>❌ Пожалуйста, заполните все обязательные поля (*)</strong></p>';
-                    thanksMessage.style.display = 'block';
-                    reminderMessage.style.display = 'none';
-                    
-                    // Прокручиваем к сообщению
-                    thanksMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-                
+                showErrorMessage('❌ Пожалуйста, заполните все обязательные поля (*)');
                 submitBtn.textContent = originalText;
                 submitBtn.disabled = false;
                 return;
@@ -639,21 +630,16 @@ function setupFormSubmitHandler() {
                 // УСПЕХ!
                 handleFormSuccess(formData);
                 
+                // Очищаем форму (опционально)
+                // guestForm.reset();
+                
             } else {
                 throw new Error('Formspree вернул ошибку');
             }
             
         } catch (error) {
             console.error('Ошибка отправки:', error);
-            
-            // Показываем ошибку в существующих блоках
-            if (thanksMessage) {
-                thanksMessage.innerHTML = '<p style="color: #d32f2f; margin: 0;"><strong>Ошибка отправки. Попробуйте еще раз.</strong></p>';
-                thanksMessage.style.display = 'block';
-                reminderMessage.style.display = 'none';
-                thanksMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
-            
+            showErrorMessage('Ошибка отправки. Попробуйте еще раз.');
             submitBtn.textContent = originalText;
             submitBtn.disabled = false;
         }
