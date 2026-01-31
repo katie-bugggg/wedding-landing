@@ -581,17 +581,14 @@
 
                 <!-- Ссылка для редактирования (будет показана после отправки) -->
                 <div id="edit-link-container" style="display: none; text-align: center; margin-top: 20px; padding: 15px; background: rgba(40, 167, 69, 0.1); border-radius: 8px; border-left: 4px solid #28a745;">
-    <p style="color: #155724; margin: 0 0 10px 0;">
-        <strong>Если ваши планы поменяются, пожалуйста, сообщите нам!</strong>
+    <p id="message-text" style="color: #155724; margin: 0 0 10px 0;">
+        <!-- Текст будет меняться в зависимости от ответов -->
     </p>
     
     <div style="margin: 15px 0; font-size: 14px;">
         <div style="margin-bottom: 5px; color: #495057;">Ссылка для редактирования:</div>
         <a href="#" id="edit-link-display" target="_blank" 
-           style="color: #4a6fa5; font-weight: bold; text-decoration: underline; 
-                  word-break: break-all; font-family: 'Courier New', monospace; 
-                  font-size: 13px; padding: 8px 12px; background: rgba(255,255,255,0.7); 
-                  border-radius: 4px; display: inline-block; border: 1px dashed #4a6fa5;">
+           style="style="color: #4a6fa5; font-weight: bold; text-decoration: underline; word-break: break-all">
             <!-- Ссылка будет вставлена сюда -->
         </a>
     </div>
@@ -599,13 +596,6 @@
     <p class="form-hint" style="margin-top: 10px; font-size: 12px; color: #6c757d;">
         Сохраните эту ссылку или добавьте страницу в закладки
     </p>
-                </div>
-                
-                <!-- Сообщения после отправки -->
-                <div id="reminder-message" style="display: none; text-align: center; margin-top: 20px; padding: 15px; background: rgba(255, 193, 7, 0.1); border-radius: 8px; border-left: 4px solid #ffc107;">
-                    <p style="color: #856404; margin: 0;">
-                        <strong>Не забудьте сообщить нам о ваших планах, когда решите!</strong>
-                    </p>
                 </div>
 
             </form>
